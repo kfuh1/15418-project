@@ -63,7 +63,16 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Background</h4>
-            <p>Write text here! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>A spanning tree of a connected, undirected graph <i>G</i> with vertex set <i>V</i> and edge set <i>E</i> is a connected subgraph of <i>G</i> that includes all vertices of <i>G</i> and exactly |V|-1 edges. When given a connected, weighted, undirected graph, the minimum spanning tree (MST) is a spanning tree with minimum total edge weight.</p>
+            <p>The key property that drives many MST algorithms is the light edge property. This property states that for any cut of a connected, undirected, weighted graph <i>G</i>, the edge with minimum weight that crosses the cut must be in the MST.</p>
+            <p>Bor&#367vka’s algorithm is a well-known parallel algorithm for finding MSTs. It makes use of the light edge property by observing that the minimum weight edge incident on any vertex <i>v</i> must be in the MST (the cut of the graph in this case partitions the graph into one set containing the single vertex <i>v</i> and a second set containing the rest of the graph). This observation introduces an axis of parallelism along vertices because edges in the MST can be selected in parallel by looking at each vertex. Using this idea, Bor&#367vka’s algorithm works as follows</p>
+            <p>While there are still edges:</p>
+            <ol>
+              <li>Find the minimum weight edge incident on each vertex (these edges will form at least one connected component)</li>
+              <li>Contract each connected component, creating a new super vertex for all vertices in the component</li>
+              <li>Remove all self edges of the super vertex</li>
+              <li>Add the minimum weight edge between super vertices to the MST and remove all other redundant edges.</li>
+            </ol>
           </div>
         </div>
       </div>
@@ -74,7 +83,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Challenges</h4>
-            <p>One of the challenges in this project will be to determine how to represent the connected components in the graph. We will have to implement a union-find data structure (or something similar to it) in order to keep track of these sets. Boru&#367vka’s algorithm requires modifying this data structure in order to keep track of super vertices and edges in our MST, so one challenge will be in parallelizing this step, and avoiding race conditions. We saw a similar issue in assignment 3 where we had to minimize the number of atomic sections that we had when using OpenMP in order to see good speedup. Another issue in CUDA will be in figuring out how to best assign the work for each thread block, and how to best utilize shared memory in the cases with large graphs.</p>
+            <p>One of the challenges in this project will be to determine how to represent the connected components in the graph. We will have to implement a union-find data structure (or something similar to it) in order to keep track of these sets. Bor&#367vka’s algorithm requires modifying this data structure in order to keep track of super vertices and edges in our MST, so one challenge will be in parallelizing this step, and avoiding race conditions. We saw a similar issue in assignment 3 where we had to minimize the number of atomic sections that we had when using OpenMP in order to see good speedup. Another issue in CUDA will be in figuring out how to best assign the work for each thread block, and how to best utilize shared memory in the cases with large graphs.</p>
             <p>Additionally, neither of us have experience in image processing so representing, modifying, and displaying the images may serve as a challenge. We are excited to learn some more about image processing. It will be fun to see this real-world application run on CPUs and GPUs while putting the knowledge we have learned about parallelism this semester to use.</p>
           </div>
         </div>
