@@ -52,7 +52,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Summary</h4>
-            <p>We plan to parallelize Bor&#367vka’s algorithm for finding minimum spanning trees and plan to optimize its performance on a CPU using OpenMP and on a GPU using CUDA. We hope to analyze and optimize the performance of our implementations and apply it to image segmentation. While we acknowledge the existence of current approaches to parallelize this algorithm, we hope to use those ideas to find an implementation that best suits the machines we end up using</p>
+            <p>We plan to parallelize Bor&#367vka’s algorithm for finding minimum spanning trees and plan to optimize its performance on a CPU using OpenMP and on a GPU using CUDA. We hope to analyze and optimize the performance of our implementations and apply it to image segmentation. While we acknowledge the existence of current approaches to parallelize this algorithm, we hope to use those ideas to find an implementation that best suits the machines we end up using.</p>
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@
             <p>Ideas for axes of parallelism include parallelizing over the components or over the vertices within each time step of the algorithm. It will also be interesting to explore other axes of parallelism such as edges when the number of components in the graph is large. Bor&#367vka’s algorithm can also be implemented using star contraction which we hope to incorporate into our algorithm once we are ready to implement image segmentation which uses that method.</p>
             <p>Image segmentation is the process of partitioning a digital image into many sets of pixels with the intent to reduce the image to a simpler form, making it easier to analyze. It makes use of Bor&#367vka’s algorithm by treating every pixel as a vertex with some assigned credit indicating how “segmented” that part of the image will be in the final result. Each edge and corresponding weight represents the difference of pixel color of the two vertices that are at the endpoints. Using contraction based on edge weights, credits are reassigned, and edges are filtered. This process continues until no edges are left over.</p>
             <p>An example is given in the image below (<a href=http://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/25257/versions/2/screenshot.PNG>Image Source</a>):</p>
-            <img src="images/image-segment.png" alt="Segmented Image" style="width:400px;height:300px;" align="middle"/>
+            <img src="images/image-segment.png" alt="Segmented Image" style="width:450px;height:330px;" class="center-block"/>
             </ol>
           </div>
         </div>
@@ -100,7 +100,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Resources</h4>
-            <p>We will be using the Gates machines. We will be basing our sequential and parallel code off of the pseudocode provided in <a href="https://drive.google.com/file/d/0B4z2gzEmkDDCTUhKUWxJQnR0bEk/view">15-210’s notes</a>. This is a very basic starting point to provide structure as their notes are catered towards functional programming. We will also have to design a union-find data structure (or something similar) and look into graph contraction algorithms.</p>
+            <p>We will be using the Gates machines. We will be basing our sequential and parallel code off of the pseudocode provided in <a href="https://drive.google.com/file/d/0B4z2gzEmkDDCTUhKUWxJQnR0bEk/view">15-210’s notes</a>. This is a very basic starting point to provide structure as their notes are catered towards functional programming. We will also have to design a union-find data structure (or something similar) and look into graph contraction algorithms. We have been reading about parallelizing this algorithm and about image segmentation, and hope to continue this research for the remainder of our project.</p>
           </div>
         </div>
       </div>
@@ -137,7 +137,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Platform Choice</h4>
-            <p>We will be coding in C++ and parallelizing with OpenMP for the CPU implementation and with CUDA for the GPU implementation. We chose these platforms so we can see how the technologies we used in class this semester can be used in real-life applications. Based on past homework assignments such as assignment 3 that also involved parallelizing graph algorithms, we think these platforms will be sufficient for the workload of our implementation. We are also using our plan of developing with two different technologies as a process for learning why certain choices on particular machines make more sense for the workload we have chosen.</p>
+            <p>We will be coding in C++ and parallelizing with OpenMP for the CPU implementation and with CUDA for the GPU implementation. We chose these platforms, so we can see how the technologies we used in class this semester can be used in real-life applications. Based on past homework assignments such as assignment 3 that also involved parallelizing graph algorithms, we think these platforms will be sufficient for the workload of our implementation. We are also using our plan of developing with two different technologies as a process for learning why certain choices on particular machines make more sense for the workload we have chosen.</p>
           </div>
         </div>
       </div>
