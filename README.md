@@ -1,2 +1,4 @@
 # 15-418 Final Project
-by NAME 1 and NAME 2
+by Kathleen Fuh and Shreya Vemuri
+
+Github link: [link](https://github.com/kfuh1/15418-project.git)
