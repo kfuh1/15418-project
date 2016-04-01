@@ -18,7 +18,7 @@
 <body>
   <header>
     <nav class="indigo" role="navigation">
-      <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Project Name</a>
+      <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">15-418 Final Project</a>
         <ul class="right hide-on-med-and-down">
           <li><a href="#">Proposal</a></li>
           <li><a href="#">Check Point</a></li>
@@ -40,7 +40,7 @@
       <div class="section">
         <div class="row">
           <div class="col s12 m12">
-            <h2>Parallelizing Bor&#367vka's Algorithm and Optimizing Image Segmentation</h2>
+            <h2>Parallelizing Bor&#367vka's Algorithm and Applying it to Image Segmentation</h2>
             <p>By Kathleen Fuh and Shreya Vemuri</p> 
           </div>
         </div>
@@ -52,7 +52,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Summary</h4>
-            <p>Write text here! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>We plan to parallelize Bor&#367vka’s algorithm for finding minimum spanning trees and plan to optimize its performance on a CPU using OpenMP and on a GPU using CUDA. We hope to analyze and optimize the performance of our implementations and apply it to image segmentation. While we acknowledge the existence of current approaches to parallelize this algorithm, we hope to use those ideas to find an implementation that best suits the machines we end up using</p>
           </div>
         </div>
       </div>
@@ -74,7 +74,8 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Challenges</h4>
-            <p>Write text here! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>One of the challenges in this project will be to determine how to represent the connected components in the graph. We will have to implement a union-find data structure (or something similar to it) in order to keep track of these sets. Boru&#367vka’s algorithm requires modifying this data structure in order to keep track of super vertices and edges in our MST, so one challenge will be in parallelizing this step, and avoiding race conditions. We saw a similar issue in assignment 3 where we had to minimize the number of atomic sections that we had when using OpenMP in order to see good speedup. Another issue in CUDA will be in figuring out how to best assign the work for each thread block, and how to best utilize shared memory in the cases with large graphs.</p>
+            <p>Additionally, neither of us have experience in image processing so representing, modifying, and displaying the images may serve as a challenge. We are excited to learn some more about image processing. It will be fun to see this real-world application run on CPUs and GPUs while putting the knowledge we have learned about parallelism this semester to use.</p>
           </div>
         </div>
       </div>
@@ -85,7 +86,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Resources</h4>
-            <p>Write text here! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>We will be using the Gates machines. We will be basing our sequential and parallel code off of the pseudocode provided in <a href="https://drive.google.com/file/d/0B4z2gzEmkDDCTUhKUWxJQnR0bEk/view">15-210’s notes</a>. This is a very basic starting point to provide structure as their notes are catered towards functional programming. We will also have to design a union-find data structure (or something similar) and look into graph contraction algorithms.</p>
           </div>
         </div>
       </div>
@@ -107,7 +108,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Platform Choice</h4>
-            <p>Write text here! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>We will be coding in C++ and parallelizing with OpenMP for the CPU implementation and with CUDA for the GPU implementation. We chose these platforms so we can see how the technologies we used in class this semester can be used in real-life applications. Based on past homework assignments such as assignment 3 that also involved parallelizing graph algorithms, we think these platforms will be sufficient for the workload of our implementation. We are also using our plan of developing with two different technologies as a process for learning why certain choices on particular machines make more sense for the workload we have chosen.</p>
           </div>
         </div>
       </div>
