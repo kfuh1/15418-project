@@ -76,7 +76,7 @@
             <p>Ideas for axes of parallelism include parallelizing over the components or over the vertices within each time step of the algorithm. It will also be interesting to explore other axes of parallelism such as edges when the number of components in the graph is large. Bor&#367vka’s algorithm can also be implemented using star contraction which we hope to incorporate into our algorithm once we are ready to implement image segmentation which uses that method.</p>
             <p>Image segmentation is the process of partitioning a digital image into many sets of pixels with the intent to reduce the image to a simpler form, making it easier to analyze. It makes use of Bor&#367vka’s algorithm by treating every pixel as a vertex with some assigned credit indicating how “segmented” that part of the image will be in the final result. Each edge and corresponding weight represents the difference of pixel color of the two vertices that are at the endpoints. Using contraction based on edge weights, credits are reassigned, and edges are filtered. This process continues until no edges are left over.</p>
             <p>An example is given in the image below:</p>
-            <img src="images/image-segment.png" alt="Segmented Image" style="width:400px;height:300px;"/>
+            <img src="images/image-segment.png" alt="Segmented Image" style="width:400px;height:300px;"/><a href=http://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/25257/versions/2/screenshot.PNG align="middle">Image Source</a>
             </ol>
           </div>
         </div>
