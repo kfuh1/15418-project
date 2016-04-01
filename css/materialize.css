@@ -7405,6 +7405,7 @@ nav ul {
 }
 
 nav ul li {
+  list-style-type: none;
   transition: background-color .3s;
   float: left;
   padding: 0;
