@@ -2600,7 +2600,7 @@ html {
 }
 
 ul {
-  list-style-type: none;
+  list-style-type: circle;
 }
 
 a {
