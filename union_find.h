@@ -1,3 +1,6 @@
+#ifndef __UNION_FIND_H__
+#define __UNION_FIND_H__
+
 #include <stdlib.h>
 
 struct set {
@@ -5,7 +8,7 @@ struct set {
     int rank;
 };
 
-int find(struct set sets[], int vertex){
+int find(struct set *sets, int vertex){
     int parent = sets[vertex].parent;
     if(vertex != parent){
         sets[vertex].parent = find(sets, parent);
@@ -14,7 +17,7 @@ int find(struct set sets[], int vertex){
 }
 
 //WILL THIS ACTUALLY MODIFY THE sets ARRAY PASSED IN?
-void union_sets(struct set sets[], int v1, int v2){
+void union_sets(struct set *sets, int v1, int v2){
     int root1 = find(sets, v1);
     int root2 = find(sets, v2);
 
@@ -36,3 +39,4 @@ void union_sets(struct set sets[], int v1, int v2){
         sets[root1].rank++;
     }
 }
+#endif
