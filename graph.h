@@ -5,7 +5,7 @@ struct Edge {
     Vertex dest;
     int weight;
 };
-typedef struct Edge Edge;
+//typedef struct Edge Edge;
 
 struct graph {
     int num_nodes;
@@ -13,7 +13,7 @@ struct graph {
 
     Edge* edges;
 };
-typedef graph* Graph'
+typedef graph* Graph;
 
 int get_num_nodes(Graph g){
     return g->num_nodes;
