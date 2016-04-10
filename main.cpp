@@ -1,24 +1,27 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <iomanip>
 
-#include "boruvka.h"
+#include "boruvka_sequential.h"
+#include "graph.h"
+#include "union_find.h"
 
 Graph createGraph(int V, int E)
 {
     Graph g = new graph;
     g->num_nodes = V;
     g->num_edges = E;
+    g->adjList = new ListNode[2*E];
     return g;
 }
 
 int main(int argc, char** argv){
     int V = 4;  // Number of vertices in graph
     int E = 5;  // Number of edges in graph
+    
     Graph g = createGraph(V, E);
-             
-             
+    printf("%d", g->adjList[1] == NULL);
+            
     // add edge 0-1
     struct Edge e0;
     e0.src = 0;
@@ -50,7 +53,7 @@ int main(int argc, char** argv){
     e3.weight = 15;
     insert(g->adjList[e3.src], e3);
     insert(g->adjList[e3.dest], e3);
-                                                                     
+     
     // add edge 2-3
     struct Edge e4;
     e4.src = 2;
@@ -58,8 +61,8 @@ int main(int argc, char** argv){
     e4.weight = 4;
     insert(g->adjList[e4.src], e4);
     insert(g->adjList[e4.dest], e4);
-                                                                                      
+                                                                                    
     find_MST(g);
-                                                                                           
+                                                                                         
     return 0;
 }
