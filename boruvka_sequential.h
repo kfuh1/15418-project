@@ -11,7 +11,7 @@ void find_MST(Graph g){
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
     int min_edges[n];
-    struct set *components = new struct set;
+    struct set *components = new struct set[n];
     int num_components = n;
     
     //initialize min_edges array
