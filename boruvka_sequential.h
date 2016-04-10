@@ -52,8 +52,15 @@ void find_MST(Graph g){
             num_components--;
         }
     }
-    
+   
+    for(int i = 0; i < n; i++) {
+      if(min_edges[min_edges[i]] == i) {
+        min_edges[i] = -1;
+      }
+    }
+
     for(int i = 0; i < n; i++){
+      if (min_edges[i] != -1)
         printf("src %d to dest %d\n", i, min_edges[i]);
     }
 }
