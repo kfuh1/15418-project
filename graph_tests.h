@@ -330,56 +330,56 @@ Graph createSevenCycleGraph() {
     struct Edge e0;
     e0.src = 0;
     e0.dest = 1;
-    e0.weight = 5;
+    e0.weight = 4;
     insert(&(g->adjList[e0.src]), e0);
     struct Edge e0_rev;
     e0_rev.src = 1;
     e0_rev.dest = 0;
-    e0_rev.weight = 5;
+    e0_rev.weight = 4;
     insert(&(g->adjList[e0_rev.src]), e0_rev);
     
     struct Edge e1;
     e1.src = 1;
     e1.dest = 2;
-    e1.weight = 4;
+    e1.weight = 3;
     insert(&(g->adjList[e1.src]), e1);
     struct Edge e1_rev;
     e1_rev.src = 2;
     e1_rev.dest = 1;
-    e1_rev.weight = 4;
+    e1_rev.weight = 3;
     insert(&(g->adjList[e1_rev.src]), e1_rev);
     
     struct Edge e2;
     e2.src = 2;
     e2.dest = 3;
-    e2.weight = 10;
+    e2.weight = 6;
     insert(&(g->adjList[e2.src]), e2);
     struct Edge e2_rev;
     e2_rev.src = 3;
     e2_rev.dest = 2;
-    e2_rev.weight = 10;
+    e2_rev.weight = 6;
     insert(&(g->adjList[e2_rev.src]), e2_rev);
 
     struct Edge e3;
     e3.src = 3;
     e3.dest = 4;
-    e3.weight = 3;
+    e3.weight = 4;
     insert(&(g->adjList[e3.src]), e3);
     struct Edge e3_rev;
     e3_rev.src = 4;
     e3_rev.dest = 3;
-    e3_rev.weight = 3;
+    e3_rev.weight = 4;
     insert(&(g->adjList[e3_rev.src]), e3_rev);
     
     struct Edge e4;
     e4.src = 4;
     e4.dest = 5;
-    e4.weight = 11;
+    e4.weight = 3;
     insert(&(g->adjList[e4.src]), e4);
     struct Edge e4_rev;
     e4_rev.src = 5;
     e4_rev.dest = 4;
-    e4_rev.weight = 11;
+    e4_rev.weight = 3;
     insert(&(g->adjList[e4_rev.src]), e4_rev);
     
     struct Edge e5;
@@ -396,12 +396,12 @@ Graph createSevenCycleGraph() {
     struct Edge e6;
     e6.src = 6;
     e6.dest = 0;
-    e6.weight = 2;
+    e6.weight = 5;
     insert(&(g->adjList[e6.src]), e6);
     struct Edge e6_rev;
     e6_rev.src = 0;
     e6_rev.dest = 6;
-    e6_rev.weight = 2;
+    e6_rev.weight = 5;
     insert(&(g->adjList[e6_rev.src]), e6_rev);
      
     return g;
