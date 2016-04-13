@@ -13,34 +13,30 @@ void find_MST(Graph g){
     struct Edge* min_edges = new struct Edge[n];
     struct set *components = new struct set[n];
     int num_components = n;
-   
-    /*Edge emptyEdge;
-    emptyEdge.src = -1;
-    emptyEdge.dest = -1;
-    emptyEdge.weight = -1; */
-    //initialize min_edges array
+    //this is a hacky way to accommodate the fact that we look at every edge
+    //even though we're contracting
+    bool is_first_passes[n];
+    
     for(int i = 0; i < n; i++){
         components[i].parent = i;
         components[i].rank = 0;
-        //min_edges[i] = emptyEdge;
+        is_first_passes[i] = true;
     }
 
     while(num_components > 1){
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){
             ListNode edgeNode = g->adjList[i];
-            bool isFirstPass = true;
-            //int curr_min_weight = 0;
             while(edgeNode != NULL){
-        //        printf("hello");
                 //get representative nodes
                 int set1 = find(components, i);
                 int set2 = find(components, edgeNode->e.dest);
                 //this edge has already been contracted (endpoints in same component)
                 if(set1 != set2){
-                    if(isFirstPass){
+                    if(is_first_passes[set1]){
                         min_edges[set1] = edgeNode->e; 
-                        isFirstPass = false;
+                        is_first_passes[i] = false;
+                        is_first_passes[set1] = false;
                     }
                     else if (min_edges[set1].weight > edgeNode->e.weight)
                         min_edges[set1] = edgeNode->e;
@@ -59,18 +55,16 @@ void find_MST(Graph g){
             union_sets(components, i, dest);
             num_components--;
         }
+        for(int i = 0; i < n; i++){
+            is_first_passes[i] = true;
+        }
         
     }
    
-    /*for(int i = 0; i < n; i++) {
-      if(min_edges[min_edges[i]] == i) {
-        min_edges[i] = -1;
-      }
-    }*/
 
     for(int i = 0; i < n; i++){
       if (min_edges[i].src != -1)
-        printf("src %d to dest %d\n", i, min_edges[i].dest);
+        printf("src %d to dest %d\n", min_edges[i].src, min_edges[i].dest);
     }
 }
 #endif
