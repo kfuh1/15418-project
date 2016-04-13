@@ -249,7 +249,9 @@ int main(int argc, char** argv){
     e4_rev.weight = 4;
     insert(&(g->adjList[e4_rev.src]), e4_rev);**/
     
-    Graph g = createSevenCycleGraph();
+    //
+    //Graph g = createSevenCycleGraph();
+    Graph g = createGeeksGraph();
 
     for (int i = 0; i < 7; i++) {
        ListNode edgeNode = g->adjList[i];
