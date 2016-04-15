@@ -8,10 +8,10 @@
 #include "graph_tests.h"
 
 int main(int argc, char** argv){
-    int V = 4;  
+    int V = 12;  
 
     //DEFINE GRAPH
-    Graph g = createSimpleGraph();
+    Graph g = createCrazyGraph();
     
     for (int i = 0; i < V; i++) {
         printf("src: %d\n", i);

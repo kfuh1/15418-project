@@ -7,4 +7,12 @@ Graph createGraph(int V, int E);
 
 Graph createSimpleGraph();
 
+Graph createStarGraph();
+
+Graph createCycleGraph();
+
+Graph createLineGraph();
+
+Graph createCrazyGraph();
+
 #endif
