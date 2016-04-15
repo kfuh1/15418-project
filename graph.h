@@ -10,10 +10,16 @@ struct graph {
     int num_edges;
 
     int* offsets;
-    Vertex* endpoints;
+    Vertex* edges;
     int* weights; 
 };
 typedef graph* Graph;
+
+struct Edge {
+    Vertex src;
+    Vertex dest;
+    int weight;
+};
 
 //graph functions
 static inline int get_num_nodes(const Graph g){
@@ -34,7 +40,7 @@ static inline const Vertex* edges_end(const Graph g, Vertex v){
         offset = g->num_edges;
     else
         offset = g->offsets[v + 1];
-    return g->outgoing_edges + offset;
+    return g->edges + offset;
 }
 
 static inline const int edge_list_size(const Graph g, Vertex v){

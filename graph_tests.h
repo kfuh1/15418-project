@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "graph.h"
-
+/*
 Graph createGraph(int V, int E)
 {
     Graph g = new graph;
@@ -578,4 +578,4 @@ Graph createSevenCycleGraph() {
     insert(&(g->adjList[e6_rev.src]), e6_rev);
      
     return g;
-}
+}*/

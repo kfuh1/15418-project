@@ -2,7 +2,6 @@
 #define __BORUVKA_H___
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "graph.h"
 

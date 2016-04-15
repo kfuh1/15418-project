@@ -16,7 +16,7 @@ dirs:
 clean:
 		/bin/rm -rf $(OBJDIR) *~ $(APP_NAME)
 
-OBJS=$(OBJDIR)/main.o $(OBJDIR)/union_find.o $(OBJDIR)/graph.o $(OBJDIR)/boruvka_sequential.o
+OBJS=$(OBJDIR)/main.o $(OBJDIR)/union_find.o $(OBJDIR)/boruvka_sequential.o
 
 $(APP_NAME): dirs $(OBJS)
 		$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
