@@ -23,7 +23,6 @@ void find_MST(Graph g){
         is_first_passes[i] = true;
     }
 
-
     while(num_components > 1){
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){
@@ -33,6 +32,7 @@ void find_MST(Graph g){
             for(const Vertex* v = start; v < end; v++){
                 weight_offset++;
                 //get representative nodes
+                
                 int set1 = find(components, i);
                 int set2 = find(components, *v);
                 //this edge has already been contracted (endpoints in same component)
@@ -54,6 +54,7 @@ void find_MST(Graph g){
         //contract based on min edges found
         for(int i = 0; i < n; i++){
             int dest = min_edges[i].dest;
+
             int root1 = find(components, i);
             int root2 = find(components, dest);
             if(root1 == root2){
@@ -74,7 +75,6 @@ void find_MST(Graph g){
         }
         
     }
-   
 
     for(int i = 0; i < n-1; i++){
       //if (mst_edges[i].src != -1)
