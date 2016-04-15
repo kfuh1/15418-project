@@ -23,7 +23,19 @@ int main(int argc, char** argv){
     int E = 5;  // Number of edges in graph
     
     Graph g = createGraph(V, E);
-            
+    int offsets[4] = {0,2,5,7};
+    for(int i = 0; i < V; i++){
+        g->offsets[i] = offsets[i];
+    }
+    int edges[10] = {1,3,0,2,3,1,3,0,1,2};
+    int weights[10] = {2,6,2,3,4,3,1,6,4,1};
+    for(int i = 0; i < E; i++){
+        g->edges[i] = edges[i];
+        g->weights[i] = weights[i];
+    }
+
+    
+
     /*for (int i = 0; i < 7; i++) {
        ListNode edgeNode = g->adjList[i];
        printf("Vertex %d ", i);
