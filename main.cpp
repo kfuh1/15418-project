@@ -7,6 +7,8 @@
 #include "union_find.h"
 #include "graph_tests.h"
 
+#include "CycleTimer.h"
+
 int main(int argc, char** argv){
     int V = 12;  
 
@@ -25,7 +27,13 @@ int main(int argc, char** argv){
 
     printf("-------------------------\n");
 
+    double startTime = CycleTimer::currentSeconds();
+
     find_MST(g);
+
+    double endTime = CycleTimer::currentSeconds();
+
+    printf("Total time: %.20f\n", endTime - startTime);
                                                                             
     return 0;
 }
