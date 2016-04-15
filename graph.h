@@ -2,35 +2,46 @@
 #define __GRAPH_H__
 
 #include <stdlib.h>
-#include <stdio.h>
 
 typedef int Vertex;
-
-struct Edge {
-    Vertex src;
-    Vertex dest;
-    int weight;
-};
-
-struct list_node {
-    struct Edge e;
-    list_node* next;
-};
-typedef struct list_node* ListNode;
 
 struct graph {
     int num_nodes;
     int num_edges;
 
-    ListNode* adjList;
+    int* offsets;
+    Vertex* endpoints;
+    int* weights; 
 };
 typedef graph* Graph;
 
-//linked list functions
-void insert(ListNode* node, Edge newEdge);
-
 //graph functions
-int get_num_nodes(Graph g);
+static inline int get_num_nodes(const Graph g){
+    return g->num_nodes;
+}
 
-int get_num_edges(Graph g);
+static inline int get_num_edges(const Graph g){
+    return g->num_edges;
+}
+
+static inline const Vertex* edges_begin(const Graph g, Vertex v){
+    return g->edges + g->offsets[v];
+}
+
+static inline const Vertex* edges_end(const Graph g, Vertex v){
+    int offset;
+    if(v == g->num_nodes - 1)
+        offset = g->num_edges;
+    else
+        offset = g->offsets[v + 1];
+    return g->outgoing_edges + offset;
+}
+
+static inline const int edge_list_size(const Graph g, Vertex v){
+    if(v == g->num_nodes - 1)
+        return g->num_edges - g->offsets[v];
+    else
+        return g->offsets[v + 1] - g->offsets[v];
+    
+}
 #endif
