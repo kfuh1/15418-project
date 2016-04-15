@@ -13,14 +13,14 @@ Graph createGraph(int V, int E)
     g->num_nodes = V;
     g->num_edges = E;
     g->offsets = new int[V];
-    g->edges = new Vertex[2 * E];
-    g->weights = new int[2 * E];
+    g->edges = new Vertex[E];
+    g->weights = new int[E];
     return g;
 }
 
 int main(int argc, char** argv){
     int V = 4;  // Number of vertices in graph
-    int E = 5;  // Number of edges in graph
+    int E = 10;  // Number of edges in graph
     
     Graph g = createGraph(V, E);
     int offsets[4] = {0,2,5,7};
@@ -34,16 +34,14 @@ int main(int argc, char** argv){
         g->weights[i] = weights[i];
     }
 
-    
-
-    /*for (int i = 0; i < 7; i++) {
-       ListNode edgeNode = g->adjList[i];
-       printf("Vertex %d ", i);
-       while(edgeNode != NULL) {
-        printf("Dest: %d\n", edgeNode->e.dest);
-        edgeNode = edgeNode->next;
-       }
-    }*/
+    for (int i = 0; i < V; i++) {
+        printf("src: %d\n", i);
+        const Vertex* start = edges_begin(g, i);
+        const Vertex* end = edges_end(g, i);
+        for(const Vertex* v = start; v < end; v++){
+            printf("dest: %d\n", *v);
+        }  
+    }
 
     find_MST(g);
                                                                               
