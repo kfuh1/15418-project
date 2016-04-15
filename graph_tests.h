@@ -15,4 +15,10 @@ Graph createLineGraph();
 
 Graph createCrazyGraph();
 
+Graph createSimpleGraph();
+
+Graph createGeeksGraph();
+
+Graph create7CycleGraph();
+
 #endif

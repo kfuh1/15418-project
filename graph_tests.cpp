@@ -107,3 +107,42 @@ Graph createCrazyGraph() {
     
     return g;
 }
+
+Graph createGeeksGraph(){
+    int V = 9;
+    int E = 28;
+
+    Graph g = createGraph(V, E);
+    int offsets[9] = {0,2,5,9,12,14,18,21,25};
+    for(int i = 0; i < V; i++){
+        g->offsets[i] = offsets[i];
+    }
+    int edges[28] = {1,7,0,2,7,1,3,5,8,2,4,5,3,5,2,3,4,6,5,7,8,0,1,6,8,2,6,7};
+    int weights[28] = {4,8,4,8,11,8,7,4,2,7,9,14,9,10,4,14,10,2,2,1,6,8,11,1,7,2,6,7};
+    for(int i = 0; i < E; i++){
+        g->edges[i] = edges[i];
+        g->weights[i] = weights[i];
+    }
+    
+    return g;
+}
+
+Graph create7CycleGraph(){
+    int V = 7;
+    int E = 14;
+
+    Graph g = createGraph(V,E);
+    int offsets[7] = {0,2,4,6,8,10,12};
+    
+    for(int i = 0; i < V; i++){
+        g->offsets[i] = offsets[i];
+    }
+    int edges[14] = {1,6,0,2,1,3,2,4,3,5,4,6,0,5};
+    int weights[14] = {4,5,4,3,3,6,6,4,4,3,3,2,2,5};
+    for(int i = 0; i < E; i++){
+        g->edges[i] = edges[i];
+        g->weights[i] = weights[i];
+    }
+    
+    return g;
+}
