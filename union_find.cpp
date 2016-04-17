@@ -1,3 +1,4 @@
+#include <omp.h>
 #include "union_find.h"
 
 int find(struct set *sets, int vertex){
@@ -8,7 +9,6 @@ int find(struct set *sets, int vertex){
     return parent;
 }
 
-//WILL THIS ACTUALLY MODIFY THE sets ARRAY PASSED IN?
 void union_sets(struct set *sets, int v1, int v2){
     int root1 = find(sets, v1);
     int root2 = find(sets, v2);
@@ -18,7 +18,9 @@ void union_sets(struct set *sets, int v1, int v2){
     }
     int rank1 = sets[root1].rank;
     int rank2 = sets[root2].rank;
-
+    
+    #pragma omp critical
+    {
     if(rank1 < rank2){
         sets[root1].parent = root2;
     }
@@ -29,5 +31,6 @@ void union_sets(struct set *sets, int v1, int v2){
     else{
         sets[root1].parent = root2;
         sets[root1].rank++;
+    }
     }
 }

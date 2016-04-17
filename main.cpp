@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "boruvka_sequential.h"
+#include "boruvka_parallel.h"
 #include "graph.h"
 #include "union_find.h"
 #include "graph_tests.h"
@@ -27,13 +28,20 @@ int main(int argc, char** argv){
 
     printf("-------------------------\n");
 
-    double startTime = CycleTimer::currentSeconds();
+    double startTimeSeq = CycleTimer::currentSeconds();
 
     find_MST(g);
 
-    double endTime = CycleTimer::currentSeconds();
+    double endTimeSeq = CycleTimer::currentSeconds();
 
-    printf("Total time: %.20f\n", endTime - startTime);
+    double startTimePar = CycleTimer::currentSeconds();
+
+    find_MST_parallel(g);
+
+    double endTimePar = CycleTimer::currentSeconds();
+
+    printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
+    printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
                                                                             
     return 0;
 }

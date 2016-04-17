@@ -77,9 +77,9 @@ void find_MST(Graph g){
     }
 
     for(int i = 0; i < n-1; i++){
-      //if (mst_edges[i].src != -1)
         printf("src %d to dest %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
+    printf("-------------------------\n");
     delete[] min_edges;
     delete[] components;
 }

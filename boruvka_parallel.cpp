@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include <omp.h>
 
 #include "boruvka_parallel.h"
 #include "union_find.h"
@@ -26,6 +28,7 @@ void find_MST_parallel(Graph g){
 
     while(num_components > 1){
         //find minimum weight edge out of each componenet
+        #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g, i);
@@ -41,17 +44,22 @@ void find_MST_parallel(Graph g){
                     e.src = i;
                     e.dest = *v;
                     e.weight = g->weights[g->offsets[i] + weight_offset];
-                    if(is_first_passes[set1]){
-                        min_edges[set1] = e; 
-                        is_first_passes[i] = false;
-                        is_first_passes[set1] = false;
+                    #pragma omp critical
+                    {
+                        if(is_first_passes[set1]){
+                             min_edges[set1] = e; 
+                            is_first_passes[i] = false;
+                            is_first_passes[set1] = false;
+                        }
+                        else if (min_edges[set1].weight > e.weight)
+                            min_edges[set1] = e;
                     }
-                    else if (min_edges[set1].weight > e.weight)
-                        min_edges[set1] = e;
                 }
             }
         }
+        #pragma omp barrier
         //contract based on min edges found
+        #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < n; i++){
             int dest = min_edges[i].dest;
 
@@ -60,25 +68,32 @@ void find_MST_parallel(Graph g){
             if(root1 == root2){
                 continue;
             }
-            //for edges found, add to mst
-            mst_edges[mst_edges_idx] = min_edges[i];
-            mst_edges_idx += 1;
             union_sets(components, i, dest);
-            num_components--;
+            //for edges found, add to mst
+            #pragma omp critical
+            {
+                mst_edges[mst_edges_idx] = min_edges[i];
+                mst_edges_idx += 1;
+
+                num_components--;
+            }
         }
-        
+        #pragma omp barrier        
         if(mst_edges_idx == n-1)
             break;
 
+        #pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
         }
-        
+        #pragma omp barrier 
     }
 
+    #pragma omp barrier
     for(int i = 0; i < n-1; i++){
         printf("src %d to dest %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
-    delete[] min_edges;
-    delete[] components;
+    printf("------------------------\n");
+//    delete[] min_edges;
+//    delete[] components;
 }
