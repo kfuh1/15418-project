@@ -17,6 +17,7 @@ void find_MST_parallel(Graph g){
     //even though we're contracting
     bool is_first_passes[n];
 
+    #pragma omp parallel for schedule(static)
     for(int i = 0; i < n; i++){
         components[i].parent = i;
         components[i].rank = 0;
@@ -31,8 +32,7 @@ void find_MST_parallel(Graph g){
             int weight_offset = -1;
             for(const Vertex* v = start; v < end; v++){
                 weight_offset++;
-                //get representative nodes
-                
+                //get representative nodes 
                 int set1 = find(components, i);
                 int set2 = find(components, *v);
                 //this edge has already been contracted (endpoints in same component)
