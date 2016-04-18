@@ -28,7 +28,7 @@ void find_MST_parallel(Graph g){
 
     while(num_components > 1){
         //find minimum weight edge out of each componenet
-        #pragma omp parallel for schedule(dynamic)
+        #pragma omp parallel for schedule(dynamic, 256)
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g, i);
@@ -59,7 +59,7 @@ void find_MST_parallel(Graph g){
         }
         #pragma omp barrier
         //contract based on min edges found
-        #pragma omp parallel for schedule(dynamic)
+        #pragma omp parallel for schedule(dynamic, 256)
         for(int i = 0; i < n; i++){
             int dest = min_edges[i].dest;
 
