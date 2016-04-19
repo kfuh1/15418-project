@@ -36,8 +36,8 @@ void find_MST_parallel(Graph g){
             for(const Vertex* v = start; v < end; v++){
                 weight_offset++;
                 //get representative nodes 
-                int set1 = find(components, i);
-                int set2 = find(components, *v);
+                int set1 = find_parallel(components, i);
+                int set2 = find_parallel(components, *v);
                 //this edge has already been contracted (endpoints in same component)
                 if(set1 != set2){
                     Edge e;
@@ -63,20 +63,18 @@ void find_MST_parallel(Graph g){
         for(int i = 0; i < n; i++){
             int dest = min_edges[i].dest;
 
-            int root1 = find(components, i);
-            int root2 = find(components, dest);
+            int root1 = find_parallel(components, i);
+            int root2 = find_parallel(components, dest);
             if(root1 == root2){
                 continue;
             }
-            union_sets(components, i, dest);
+            union_parallel(components, i, dest);
             //for edges found, add to mst
-            #pragma omp critical
-            {
-                mst_edges[mst_edges_idx] = min_edges[i];
-                mst_edges_idx += 1;
+            mst_edges[mst_edges_idx] = min_edges[i];
+            mst_edges_idx += 1;
 
-                num_components--;
-            }
+            num_components--;
+            
         }
         #pragma omp barrier        
         if(mst_edges_idx == n-1)
@@ -94,6 +92,7 @@ void find_MST_parallel(Graph g){
         printf("src %d to dest %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     printf("------------------------\n");
-//    delete[] min_edges;
-//    delete[] components;
+
+    delete[] min_edges;
+    delete[] components;
 }

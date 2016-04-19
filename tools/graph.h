@@ -23,6 +23,7 @@ struct Edge {
 
 /* IO */
 Graph load_graph_binary(const char* filename);
+void store_graph_binary(const char* filename, Graph);
 
 /* deallocation */
 void free_graph(Graph);

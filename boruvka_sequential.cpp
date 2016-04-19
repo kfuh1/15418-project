@@ -33,8 +33,8 @@ void find_MST(Graph g){
                 weight_offset++;
                 //get representative nodes
                 
-                int set1 = find(components, i);
-                int set2 = find(components, *v);
+                int set1 = find_seq(components, i);
+                int set2 = find_seq(components, *v);
                 //this edge has already been contracted (endpoints in same component)
                 if(set1 != set2){
                     Edge e;
@@ -55,15 +55,15 @@ void find_MST(Graph g){
         for(int i = 0; i < n; i++){
             int dest = min_edges[i].dest;
 
-            int root1 = find(components, i);
-            int root2 = find(components, dest);
+            int root1 = find_seq(components, i);
+            int root2 = find_seq(components, dest);
             if(root1 == root2){
                 continue;
             }
             //for edges found, add to mst
             mst_edges[mst_edges_idx] = min_edges[i];
             mst_edges_idx += 1;
-            union_sets(components, i, dest);
+            union_seq(components, i, dest);
             num_components--;
         }
         
