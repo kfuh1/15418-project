@@ -52,7 +52,12 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Work Completed</h4>
-            <p></p>
+            <p>So far we have:</p>
+            <ul>
+                <li>Implemented a sequential version of Bor&#367vka’s algorithm for finding an MST. In this process, we were able to determine the data structure for our graph that would best lend itself to parallelizing</li>
+                <li>Used OpenMP primitives in order to parallelize our CPU version of Bor&#367vka’s algorithm (we’re working on making it a better parallel version)</li>
+                <li>Written a lock-free union-find structure and find operation such that we do not need to use critical regions in our parallel version</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -63,73 +68,59 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Challenges</h4>
-            <p></p>
+            <p>We had some trouble trying to figure out how to parallelize finding the minimum edges incident on each vertex, specifically after graph contraction. In our implementation we do not update the graph, so finding the minimum edge for a connected component would require critical regions as we combine the results from multiple vertices in the same component. We plan to try using star contraction or parallelize over groups such that we can do multiple minimum searches at once.</p>
+            <p>We also had trouble figuring out how to create larger graphs from provided text files as was done in Assignment 3. Some of that code was not immediately obvious to us and also we would like to use an undirected graph, not just a directed graph. We decided that for now we will not be using those graphs and will be working on generating our own that can better fit our graph representation.</p>
+            <p>Creating a lock-free union find structure took us some time to research, so that is why we are behind schedule a bit. This lock-free union find implementation does not use union-by-rank, so we may try to add that optimization if time permits. We feel that we may try image segmentation in the last week if time permits because it would be cool to apply our algorithm to that.</p>
+            <p>One concern we currently have is that Bor&#367vka’s algorithm doesn’t seem to lend itself well to a CUDA version, and we’re not sure how we will divide the work into blocks. We’re still in the process of researching ideas for a CUDA implementation.</p>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="container">
       <div class="section">
         <div class="row">
           <div class="col s12 m12">
-            <h4>Goals & Deliverables</h4>
-            <p>By the end of the project, we plan to achieve the following:</p>
-            <ul>
-                <li>A working baseline sequential Borv&#367ka implementation</li>
-                <li>A parallel algorithm for the CPU and a parallel algorithm for the GPU</li>
-                <li>Relative linear speedup with the number of cores on a CPU up to some point</li>
-            </ul>
-            <p>By the end of the project, we hope to achieve the following:</p>
-            <ul>
-                <li>A GPU implementation that achieves a speedup close to that of the CPU</li>
-                <li>An application of the algorithm to image segmentation (if time permits - right now, it is in our schedule to do so)</li>
-            </ul>
-            <p>By the end of this project, we plan to demo the following:</p>
-            <ul>
-                <li>Graphs depicting the performance of our sequential algorithm versus the performance of our implementations on a CPU versus on a GPU. We also would like to show graphs comparing performance on a varied number of cores for a CPU in order to determine what the optimal number of cores is on the CPU for some given graph</li>
-                <li>Results of image segmentation on some chosen pictures</li>
-            </ul>
+            <h4>Parallelism Competition</h4>
+            <p>At the competition we still plan to display graphs depicting the performance of our sequential algorithm versus the performance of our implementations on a CPU versus on a GPU. We also would like to show graphs comparing performance on a varied number of cores for a CPU in order to determine what the optimal number of cores is on the CPU for some given graph. If time permits in our work schedule, it would also be nice to demo our image segmentation on some chosen pictures</p> 
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="container">
       <div class="section">
         <div class="row">
           <div class="col s12 m12">
-            <h4>Schedule</h4>
+            <h4>Revised Schedule</h4>
             <table style="width:100%">
                 <tr>
                     <td><b>Week</b></td>
                     <td><b>Plan</b></td>
-                    <td><b>Accomplished</b></td>
                 </tr>
                 <tr>
                     <td><b>April 4 - April 10</b></td>
-                    <td>Implement sequential version of Bor&#367vka</td>
-                    <td></td>
+                    <td>Implement sequential version of Bor&#367vka - DONE (K and S)</td>
                 </tr>
                 <tr>
                     <td><b>April 11 - April 17</b></td>
-                    <td>Parallel implementation of Bor&#367vka on CPU using OpenMP</td>
-                    <td></td>
+                    <td>Parallel implementation of Bor&#367vka on CPU using OpenMP - DONE (K and S)</td>
                 </tr>
                 <tr>
-                    <td><b>April 18 - April 24</b></td>
-                    <td>Parallel implementation of Bor&#367vka on GPU using CUDA</td>
-                    <td></td>
+                    <td><b>April 18 - April 21</b></td>
+                    <td>Create larger random graphs to test implementations (K and S)</td>
                 </tr>
                 <tr>
-                    <td><b>April 25 - May 1</b></td>
-                    <td>Apply implementations to image segmentation</td>
-                    <td></td>
+                    <td><b>April 22 - April 26</b></td>
+                    <td>Make improvements to OpenMP Parallel Implementation (K and S)</td>
+                </tr>
+                <tr>
+                    <td><b>April 27 - May 2</b></td>
+                    <td>Parallel implementation of Bor&#367vka on GPU using CUDA (K and S)</td>
                 </tr>
                 <tr>
                     <td><b>May 2 - May 8</b></td>
-                    <td>Analysis of results/buffer window/presentation preparation</td>
-                    <td></td>
+                    <td>Try image segmentation + analysis of results/buffer window/presentation preparation (K and S)</td>
                 </tr>
             </table>
           </div>
