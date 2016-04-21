@@ -12,15 +12,15 @@
 
 int main(int argc, char** argv){
     //parse args to just get filename
-    /*char* filename = argv[1];
+    char* filename = argv[1];
 
     Graph graph = load_graph_binary(filename);
 
 
     find_MST(graph);
-    */
     
-    int V = 12;  
+    
+    /*int V = 12;  
 
     //DEFINE GRAPH
     Graph g = createCrazyGraph();
@@ -50,6 +50,6 @@ int main(int argc, char** argv){
     double endTimePar = CycleTimer::currentSeconds();
 
     printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
-    printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
+    printf("Total time parallel: %.20f\n", endTimePar - startTimePar);*/
     return 0;
 }

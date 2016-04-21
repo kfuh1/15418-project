@@ -1,50 +1,74 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unordered_map>
 
 #include "graph.h"
 
-Graph create_graph(int V, int seed) {
+#define MAX_WEIGHT 50
+
+Graph instantiate_graph(int V, int E){
+    Graph g = new graph;
+    g->num_nodes = V;
+    g->num_edges = E;
+    g->offsets = new int[V];
+    g->edges = new Vertex[E];
+    g->weights = new int[E];
+    return g;
+}
+
+void sort_edges(Edge **edges){
+    //TODO write some kind of sort function
+}
+Graph create_graph(int V, int E, int seed) {
+    Graph g = instantiate_graph(V, 2 * E);
     srand(seed);
-    int* offsets = new int[V];
-    int* indices = new int[V];
-    int* numEdges = new int[V];
-    int E = 0;
-
-    //initializing indices 
-    for (int i = 0; i < V; i++) {
-        indices[i] = 0;
-    }
+    Edge *edges = new Edge[2 * E];
     
-    offsets[0] = 0;
-    for (int i = 1; i < V; i++) {
-        int numE = (rand() % V) + 1;
-        numEdges[i-1] = numE;
-        offsets[i] = offsets[i - 1] + numE;
-        E += numE;
-    }
-    numEdges[V-1] = E - offsets[V-1]; 
-    
-    int* weights = new int[E];
-    int* edges = new int[E];
+    std::unordered_map<std::string,int> edgeMap;
 
-    for (int i = 0; i < V; i++) {
-        int count = 0;
-        int length = numEdges[i];
-        while (count < length) {
-            int dest = (rand() % V);
-            int weight = (rand() % 100);
-            if (indices[dest] >= numEdges[dest]) {
-                continue; 
-            }
-            edges[offset[i] + indices[i]] = dest;
-            weights[offset[i] + indices[i]] = weight;
-            indices[i]++;
-            weights[offset[dest] + indices[dest]] = weight;
-            edges[offset[dest] + indices[dest]] = i;
-            indices[dest]++;
-            count++;
+    int count = 0;
+    int arr_idx = 0;
+    while(count < E){
+        int v1 = rand() % V;
+        int v2 = rand() % V;
+        int weight = (rand() % MAX_WEIGHT) + 1;
+        if(v1 == v2)
+            continue;
+        //this is super hacky but idk what else to use as key in map
+        std::string s = std::to_string(v1) + "," + std::to_string(v2);
+        //edge already exists
+        if(edgeMap.find(s) != edgeMap.end())
+            continue;
+
+        edgeMap.insert(std::pair<std::string,int>(s,1));
+
+        Edge e1, e2;
+        e1.src = v1;
+        e1.dest = v2;
+        e1.weight = weight; 
+        e2.src = v2;
+        e2.dest = v1;
+        e2.weight = weight;
+        edges[arr_idx] = e1;
+        arr_idx++;
+        edges[arr_idx] = e2;
+        arr_idx++;
+        count++;
+    }
+    sort_edges(&edges);
+
+    int prev_src = 0;
+    g->offsets[0] = 0;
+    for(int i = 0; i < 2 * E; i++){
+        Edge e = edges[i];
+        g->weights[i] = e.weight;
+        if(e.src != prev_src){
+            //assumig our sort is correct this should work
+            g->offsets[e.src] = i;
         }
+            
     }
+    return g;
 }
 

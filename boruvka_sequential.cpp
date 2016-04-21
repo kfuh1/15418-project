@@ -22,7 +22,11 @@ void find_MST(Graph g){
         components[i].rank = 0;
         is_first_passes[i] = true;
     }
-
+    const Vertex* s = edges_begin(g,1);
+    const Vertex* e = edges_end(g,1);
+    for(const Vertex* v = s; v < e; v++){
+        printf("%d\n", *v);
+    }
     while(num_components > 1){
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){

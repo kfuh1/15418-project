@@ -4,5 +4,7 @@
 #include <stdlib.h>
 #include "graph.h"
 
-void create_graph(int V, int E, int seed);
+Graph instantiate_graph(int V, int E);
+
+Graph create_graph(int V, int E, int seed);
 #endif
