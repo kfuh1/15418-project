@@ -6,5 +6,5 @@
 
 Graph instantiate_graph(int V, int E);
 
-Graph create_graph(int V, int E, int seed);
+Graph create_graph(char* filename);
 #endif

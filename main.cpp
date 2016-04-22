@@ -7,6 +7,7 @@
 #include "graph.h"
 #include "union_find.h"
 #include "graph_tests.h"
+#include "create_graph.h"
 
 #include "CycleTimer.h"
 
@@ -14,8 +15,9 @@ int main(int argc, char** argv){
     //parse args to just get filename
     char* filename = argv[1];
 
-    Graph graph = load_graph_binary(filename);
+    //Graph graph = load_graph_binary(filename); //using graph binaries assignment 3
 
+    Graph graph = create_graph(filename);
 
     find_MST(graph);
     
