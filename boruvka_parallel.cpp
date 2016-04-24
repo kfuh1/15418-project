@@ -18,7 +18,7 @@ void find_MST_parallel(Graph g){
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
-
+    int prev_num_components;
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < n; i++){
         components[i].parent = i;
@@ -26,7 +26,10 @@ void find_MST_parallel(Graph g){
         is_first_passes[i] = true;
     }
 
-    while(num_components > 1){
+    //continue looping until there's only 1 component
+    //in the case of a disconnected graph, until num_components doesn't change
+    while(num_components > 1 && prev_num_components != num_components){
+        prev_num_components = num_components;
         //find minimum weight edge out of each componenet
         #pragma omp parallel for schedule(dynamic, 256)
         for(int i = 0; i < n; i++){
@@ -70,15 +73,14 @@ void find_MST_parallel(Graph g){
             }
             union_parallel(components, i, dest);
             //for edges found, add to mst
-            mst_edges[mst_edges_idx] = min_edges[i];
-            mst_edges_idx += 1;
-
-            num_components--;
+            #pragma omp critical
+            {
+                mst_edges[mst_edges_idx] = min_edges[i];
+                mst_edges_idx += 1;
+                num_components--;
+            }
             
         }
-        #pragma omp barrier        
-        if(mst_edges_idx == n-1)
-            break;
 
         #pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
