@@ -18,9 +18,19 @@ int main(int argc, char** argv){
     //Graph graph = load_graph_binary(filename); //using graph binaries assignment 3
 
     Graph graph = create_graph(filename);
-
+    //printf("%d, %d\n", graph->num_nodes, graph->num_edges);
+    //int weight_idx = 0; 
+    /*for (int i = 0; i < graph->num_nodes; i++) {
+        printf("src: %d\n", i);
+        const Vertex* start = edges_begin(graph, i);
+        const Vertex* end = edges_end(graph, i);
+        for(const Vertex* v = start; v < end; v++){
+            printf("dest: %d, weight: %d\n", *v, graph->weights[weight_idx]);
+            weight_idx++;
+        }  
+    }*/
     find_MST(graph);
-    
+   
     
     /*int V = 12;  
 

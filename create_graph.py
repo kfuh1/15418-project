@@ -31,5 +31,9 @@ def createGraph(V, E, seed, graphName):
         f.write(str(edge[0]) + " " + str(edge[1]) + " " + str(edge[2]) + "\n")
     f.close()
             
-createGraph(5,10,1,"graph.txt")
+#createGraph(5,10,1,"graph.txt")
+#createGraph(100,500,1,"graph2.txt")
+#createGraph(100,4950,1,"graph3.txt")
+#createGraph(20,190,1,"graph4.txt")
 
+createGraph(4,6,1,"graph5.txt")

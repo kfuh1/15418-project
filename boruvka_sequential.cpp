@@ -22,58 +22,62 @@ void find_MST(Graph g){
         components[i].rank = 0;
         is_first_passes[i] = true;
     }
-    const Vertex* s = edges_begin(g,1);
-    const Vertex* e = edges_end(g,1);
-    for(const Vertex* v = s; v < e; v++){
-        printf("%d\n", *v);
-    }
     while(num_components > 1){
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){
-            const Vertex* start = edges_begin(g, i);
-            const Vertex* end = edges_end(g, i);
-            int weight_offset = -1;
-            for(const Vertex* v = start; v < end; v++){
-                weight_offset++;
+            int max;
+            if(i == n-1){
+                max = g->num_edges;
+            }
+            else{
+                max = g->offsets[i+1];
+            }
+            //const Vertex* start = edges_begin(g, i);
+            //const Vertex* end = edges_end(g, i);
+            //int weight_offset = -1;
+            //for(const Vertex* v = start; v < end; v++){
+            for(int j = g->offsets[i]; j < max; j++){
+                //weight_offset++;
                 //get representative nodes
                 
                 int set1 = find_seq(components, i);
-                int set2 = find_seq(components, *v);
+                //int set2 = find_seq(components, *v);
+                int set2 = find_seq(components, g->edges[j]);
                 //this edge has already been contracted (endpoints in same component)
                 if(set1 != set2){
                     Edge e;
                     e.src = i;
-                    e.dest = *v;
-                    e.weight = g->weights[g->offsets[i] + weight_offset];
+                    //e.dest = *v;
+                    e.dest = g->edges[j];
+                    //e.weight = g->weights[g->offsets[i] + weight_offset];
+                    e.weight = g->weights[j];
                     if(is_first_passes[set1]){
                         min_edges[set1] = e; 
                         is_first_passes[i] = false;
                         is_first_passes[set1] = false;
                     }
-                    else if (min_edges[set1].weight > e.weight)
+                    else if (min_edges[set1].weight > e.weight){
                         min_edges[set1] = e;
+                        is_first_passes[i] = false;
+                    }
                 }
             }
         }
         //contract based on min edges found
         for(int i = 0; i < n; i++){
+            int src = min_edges[i].src;
             int dest = min_edges[i].dest;
 
-            int root1 = find_seq(components, i);
+            int root1 = find_seq(components, src);
             int root2 = find_seq(components, dest);
-            if(root1 == root2){
-                continue;
-            }
             //for edges found, add to mst
-            mst_edges[mst_edges_idx] = min_edges[i];
-            mst_edges_idx += 1;
-            union_seq(components, i, dest);
-            num_components--;
+            if(root1 != root2){
+                mst_edges[mst_edges_idx] = min_edges[i];
+                mst_edges_idx += 1;
+                union_seq(components, root1, root2);
+                num_components--;
+            }
         }
-        
-        if(mst_edges_idx == n-1)
-            break;
-
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
         }
@@ -84,6 +88,6 @@ void find_MST(Graph g){
         printf("src %d to dest %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     printf("-------------------------\n");
-    delete[] min_edges;
-    delete[] components;
+    //delete[] min_edges;
+    //delete[] components;
 }
