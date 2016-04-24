@@ -3,6 +3,7 @@ import random
 def getKey(item):
     return item[0]
 
+#E is the number of undirected edges
 def createGraph(V, E, seed, graphName):
     random.seed(seed)
     edgeSet = set()
@@ -35,5 +36,5 @@ def createGraph(V, E, seed, graphName):
 #createGraph(100,500,1,"graph2.txt")
 #createGraph(100,4950,1,"graph3.txt")
 #createGraph(20,190,1,"graph4.txt")
-
-createGraph(4,6,1,"graph5.txt")
+#createGraph(4,6,1,"graph5.txt")
+createGraph(4039,88234,1,"graph5.txt")

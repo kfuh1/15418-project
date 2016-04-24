@@ -29,9 +29,12 @@ int main(int argc, char** argv){
             weight_idx++;
         }  
     }*/
-    find_MST(graph);
-   
+
+    double startTimeSeq = CycleTimer::currentSeconds();
+    find_MST(graph); 
+    double endTimeSeq = CycleTimer::currentSeconds();
     
+    printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
     /*int V = 12;  
 
     //DEFINE GRAPH

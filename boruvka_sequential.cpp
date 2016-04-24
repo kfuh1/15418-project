@@ -16,13 +16,17 @@ void find_MST(Graph g){
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
+    int prev_num_components = 0;
 
     for(int i = 0; i < n; i++){
         components[i].parent = i;
         components[i].rank = 0;
         is_first_passes[i] = true;
     }
-    while(num_components > 1){
+    //continue looping until there's only 1 component
+    //in the case of a disconnected graph, until num_components doesn't change
+    while(num_components > 1 && prev_num_components != num_components){
+        prev_num_components = num_components;
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){
             int max;
@@ -84,10 +88,14 @@ void find_MST(Graph g){
         
     }
 
-    for(int i = 0; i < n-1; i++){
+    /*
+    //handles the case of disconnected graphs where there would be fewer than
+    //n-1 edges in the mst
+    for(int i = 0; i < n-num_components; i++){
         printf("src %d to dest %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     printf("-------------------------\n");
-    //delete[] min_edges;
-    //delete[] components;
+    */
+    delete[] min_edges;
+    delete[] components;
 }
