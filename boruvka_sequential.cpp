@@ -29,32 +29,20 @@ void find_MST(Graph g){
         prev_num_components = num_components;
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){
-            int max;
-            if(i == n-1){
-                max = g->num_edges;
-            }
-            else{
-                max = g->offsets[i+1];
-            }
-            //const Vertex* start = edges_begin(g, i);
-            //const Vertex* end = edges_end(g, i);
-            //int weight_offset = -1;
-            //for(const Vertex* v = start; v < end; v++){
-            for(int j = g->offsets[i]; j < max; j++){
-                //weight_offset++;
+            const Vertex* start = edges_begin(g, i);
+            const Vertex* end = edges_end(g, i);
+            int weight_offset = -1;
+            for(const Vertex* v = start; v < end; v++){
+                weight_offset++;
                 //get representative nodes
-                
                 int set1 = find_seq(components, i);
-                //int set2 = find_seq(components, *v);
-                int set2 = find_seq(components, g->edges[j]);
+                int set2 = find_seq(components, *v);
                 //this edge has already been contracted (endpoints in same component)
                 if(set1 != set2){
                     Edge e;
                     e.src = i;
-                    //e.dest = *v;
-                    e.dest = g->edges[j];
-                    //e.weight = g->weights[g->offsets[i] + weight_offset];
-                    e.weight = g->weights[j];
+                    e.dest = *v;
+                    e.weight = g->weights[g->offsets[i] + weight_offset];
                     if(is_first_passes[set1]){
                         min_edges[set1] = e; 
                         is_first_passes[i] = false;
