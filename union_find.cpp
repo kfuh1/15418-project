@@ -28,6 +28,7 @@ void union_seq(struct set *sets, int v1, int v2){
     }
 }
 
+//this should union the smaller node onto the larger
 bool link_parallel(struct set *sets, int x, int y){
     if(x < y){
         return __sync_bool_compare_and_swap(&sets[x].parent, x, y);

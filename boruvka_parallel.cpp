@@ -64,17 +64,20 @@ void find_MST_parallel(Graph g){
         //contract based on min edges found
         #pragma omp parallel for schedule(dynamic, 256)
         for(int i = 0; i < n; i++){
+            int src = min_edges[i].src;
             int dest = min_edges[i].dest;
 
-            int root1 = find_parallel(components, i);
+            int root1 = find_parallel(components, src);
             int root2 = find_parallel(components, dest);
             if(root1 == root2){
                 continue;
             }
-            union_parallel(components, i, dest);
+            union_parallel(components, root1, root2);
             //for edges found, add to mst
             #pragma omp critical
             {
+            //add the edge in the index of smaller value
+            //since we're always unioning onto larger node
                 mst_edges[mst_edges_idx] = min_edges[i];
                 mst_edges_idx += 1;
                 num_components--;
@@ -89,7 +92,6 @@ void find_MST_parallel(Graph g){
         #pragma omp barrier 
     }
 
-    #pragma omp barrier
     for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
