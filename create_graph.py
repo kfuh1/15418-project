@@ -8,12 +8,13 @@ def createGraph(V, E, seed, graphName):
     random.seed(seed)
     edgeSet = set()
     edges = []
-
+    weight = 0
     count = 0
     arrIdx = 0
     while count < E:
         v1 = random.randint(0,V-1)
         v2 = random.randint(0,V-1)
+        #weight += 1
         weight = random.randint(1,100)
         if v1 == v2:
             continue
@@ -37,4 +38,4 @@ def createGraph(V, E, seed, graphName):
 #createGraph(100,4950,1,"graph3.txt")
 #createGraph(20,190,1,"graph4.txt")
 #createGraph(4,6,1,"graph5.txt")
-createGraph(4039,88234,1,"graph5.txt")
+#createGraph(4039,88234,1,"graph5_distinct_w.txt")

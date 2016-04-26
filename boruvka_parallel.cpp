@@ -91,10 +91,9 @@ void find_MST_parallel(Graph g){
 
     #pragma omp barrier
     for(int i = 0; i < n-1; i++){
-        printf("src %d to dest %d\n", mst_edges[i].src, mst_edges[i].dest);
+        printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
-    printf("------------------------\n");
-
+    
     delete[] min_edges;
     delete[] components;
 }
