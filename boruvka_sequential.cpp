@@ -10,6 +10,7 @@ void find_MST(Graph g){
     struct Edge* min_edges = new struct Edge[n];
     struct set *components = new struct set[n];
     int num_components = n;
+    int prev_num_components = 0;
 
     struct Edge* mst_edges = new struct Edge[n-1];
     int mst_edges_idx = 0;
@@ -27,7 +28,9 @@ void find_MST(Graph g){
     for(const Vertex* v = s; v < e; v++){
         printf("%d\n", *v);
     }
-    while(num_components > 1){
+   // while(num_components > 1){
+   while(prev_num_components != num_components) {
+        prev_num_components = num_components; 
         //find minimum weight edge out of each componenet
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
@@ -77,7 +80,6 @@ void find_MST(Graph g){
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
         }
-        
     }
 
     for(int i = 0; i < n-1; i++){
