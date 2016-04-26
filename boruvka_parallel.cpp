@@ -6,6 +6,32 @@
 #include "boruvka_parallel.h"
 #include "union_find.h"
 
+Edge minEdge(Edge x, Edge y) {
+    if(x.weight < y.weight) {
+        return x;
+    } else {
+        return y;
+    }
+}
+
+void atomicMin(Edge* addr, Edge x) {
+    Edge old = *addr;
+    Edge newVal = minEdge(old, x);
+    while(__sync_val_compare_and_swap(addr, old, newVal) != old) {
+        old = *addr;
+        newVal = minEdge(old, x);
+    }
+}
+
+void atomicAdd(int* addr, int x) {
+    int old = *addr;
+    int newVal = old + x;
+    while(__sync_val_compare_and_swap(addr, old, newVal) != old) {
+        old = *addr;
+        newVal = old + x;
+    }
+}
+
 void find_MST_parallel(Graph g){
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
@@ -54,6 +80,7 @@ void find_MST_parallel(Graph g){
                             is_first_passes[i] = false;
                             is_first_passes[set1] = false;
                         }
+                        //else atomicMin(&min_edges[set1], e);
                         else if (min_edges[set1].weight > e.weight)
                             min_edges[set1] = e;
                     }
@@ -79,9 +106,12 @@ void find_MST_parallel(Graph g){
             //add the edge in the index of smaller value
             //since we're always unioning onto larger node
                 mst_edges[mst_edges_idx] = min_edges[i];
+            //}
+                //atomicAdd(&mst_edges_idx, 1);
+                //atomicAdd(&num_components, -1);
                 mst_edges_idx += 1;
                 num_components--;
-            }
+           }
             
         }
 

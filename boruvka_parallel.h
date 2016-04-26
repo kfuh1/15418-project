@@ -5,6 +5,10 @@
 
 #include "graph.h"
 
+int min(Edge x, Edge y);
+
+void atomicMin(Edge *addr, Edge x);
+
 void find_MST_parallel(Graph g);
 
 #endif
