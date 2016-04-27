@@ -14,8 +14,8 @@ def createGraph(V, E, seed, graphName):
     while count < E:
         v1 = random.randint(0,V-1)
         v2 = random.randint(0,V-1)
-        #weight += 1
-        weight = random.randint(1,100)
+        weight += 1
+        #weight = random.randint(1,100)
         if v1 == v2:
             continue
         if (v1, v2) in edgeSet:
