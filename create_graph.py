@@ -39,3 +39,4 @@ def createGraph(V, E, seed, graphName):
 #createGraph(20,190,1,"graph4.txt")
 #createGraph(4,6,1,"graph5.txt")
 createGraph(4039,88234,1,"graph5_distinct_w.txt")
+createGraph(5000,94300,2,"graph6_distinct_w.txt")
