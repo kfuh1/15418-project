@@ -38,7 +38,10 @@ bool link_parallel(struct set *sets, int x, int y){
     }
 }
 int find_parallel(struct set *sets, int vertex){
-    int parent = sets[vertex].parent;
+    if(sets[vertex].parent != vertex)
+        sets[vertex].parent = find_parallel(sets, sets[vertex].parent);
+    return sets[vertex].parent;
+    /*int parent = sets[vertex].parent;
     if(vertex != parent){
         int newp = find_parallel(sets, parent);
         __sync_bool_compare_and_swap(&sets[vertex].parent, parent, newp);
@@ -46,7 +49,7 @@ int find_parallel(struct set *sets, int vertex){
     }
     else{
         return vertex;
-    }
+    }*/
 }  
 
 void union_parallel(struct set *sets, int x, int y){

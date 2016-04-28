@@ -39,6 +39,13 @@ void find_MST_parallel(Graph g){
     struct set *components = new struct set[n];
     int num_components = n;
 
+    //use this stuff so you can write into the temp_edges array in parallel
+    //then sequentially loop through it and insert into the actual mst_edges
+    //at least this way you can parallelize the find_parallel part 
+    //struct Edge* temp_edges = new struct Edge[n-1];
+    //Edge dummyEdge;
+    //dummyEdge.src = -1;
+
     struct Edge* mst_edges = new struct Edge[n-1];
     int mst_edges_idx = 0;
     //this is a hacky way to accommodate the fact that we look at every edge
@@ -58,10 +65,10 @@ void find_MST_parallel(Graph g){
         prev_num_components = num_components;
         #pragma omp parallel for schedule(dynamic, 256)
         for(int j = 0; j < n; j++){
-            if(find_seq(components, j) == j){
+            if(find_parallel(components, j) == j){
             //find minimum weight edge out of each componenet
                 for(int i = 0; i < n; i++){
-                    int set1 = find_seq(components, i);
+                    int set1 = find_parallel(components, i);
                     if(set1 == j){
                         const Vertex* start = edges_begin(g, i);
                         const Vertex* end = edges_end(g, i);
@@ -69,7 +76,7 @@ void find_MST_parallel(Graph g){
                         for(const Vertex* v = start; v < end; v++){
                             weight_offset++;
                             //get representative nodes 
-                            int set2 = find_seq(components, *v);
+                            int set2 = find_parallel(components, *v);
                             //this edge has already been contracted (endpoints in same component)
                             if(set1 != set2){
                                 Edge e;
@@ -80,7 +87,6 @@ void find_MST_parallel(Graph g){
                                     min_edges[set1] = e; 
                                     is_first_passes[set1] = false;
                                 }
-                                //else atomicMin(&min_edges[set1], e);
                                 else if (min_edges[set1].weight > e.weight)
                                     min_edges[set1] = e;
                             }
@@ -90,22 +96,28 @@ void find_MST_parallel(Graph g){
             }
         }
         //contract based on min edges found
-        #pragma omp parallel for schedule(dynamic, 256)
+        //#pragma omp parallel for schedule(dynamic, 256)
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;
 
-            //int root1 = components[src].parent;
-            //int root2 = components[dest].parent;
             int root1 = find_parallel(components, src);
             int root2 = find_parallel(components, dest);
             if(root1 == root2){
                 continue;
             }
-            union_parallel(components, root1, root2);
+            union_seq(components, root1, root2);
+            //union_parallel(components, root1, root2);
+            //edge doesn't exist in mst edges yet
+            //Edge e1 = temp_edges[root1];
+            //Edge e2 = temp_edges[root2];
+            //if(e1.src == -1 && e2.src == -1){
+            //    temp_edges[root1] = min_edges[i];
+            //}
+            //else if(e1.src == -1 &&(e2.src == src && e2))
             //for edges found, add to mst
-            #pragma omp critical
-            {
+            //#pragma omp critical
+            //{
             //add the edge in the index of smaller value
             //since we're always unioning onto larger node
                 mst_edges[mst_edges_idx] = min_edges[i];
@@ -114,7 +126,7 @@ void find_MST_parallel(Graph g){
                 //atomicAdd(&num_components, -1);
                 mst_edges_idx += 1;
                 num_components--;
-           }
+           //}
             
         }
 
