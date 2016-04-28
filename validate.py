@@ -5,7 +5,8 @@ def validateBoruvka(filename):
     mstEdges = set()
     isSequential = True
     f = open(filename)
-    
+
+    parEdgeCount = 0
     for line in f.readlines():
         line = line.strip()
         if line == "end sequential":
@@ -20,11 +21,12 @@ def validateBoruvka(filename):
             mstEdges.add(e)
             mstEdges.add(eRev)
         else:
+            parEdgeCount += 2
             if e not in mstEdges and eRev not in mstEdges:
                 mismatchedEdges.add(e)
             
     f.close()
-    return mismatchedEdges
+    return (mismatchedEdges, parEdgeCount == len(mstEdges))
 
 filename = sys.argv[1]
 print validateBoruvka(filename)
