@@ -89,7 +89,7 @@ void find_MST_parallel_star(Graph g){
         //do this so we can see if any thread sets to true meaning something got contracted
         is_smaller = false;
         //star contraction - we'll say 1 is HEADS and 0 is TAILS
-        #pragma omp parallel for schedule(dynamic, 256) 
+        //#pragma omp parallel for schedule(dynamic, 256) 
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;
@@ -105,18 +105,35 @@ void find_MST_parallel_star(Graph g){
             }
             //try to contract, but if you fail, that means someone has contracted already
             //I think this should be correct by how CAS works
-            if(!__sync_bool_compare_and_swap(&is_contracted[i],false,true)){
-                continue;
-            } 
+            //mark the tail as having been contracted
+            if(coin_flips[root1]){
+                if(!__sync_bool_compare_and_swap(&is_contracted[root2],false,true)){
+                    continue;
+                }
+            }
+            else{
+                if(!__sync_bool_compare_and_swap(&is_contracted[root1],false,true)){
+                    continue;
+                }
+            }
             is_smaller = true;
-            union_parallel(components, root1, root2);
+            if(coin_flips[root1]){
+                union_parallel(components, root2, root1);
+                mst_edges[root2] = min_edges[i];
+            }
+            else{
+                union_parallel(components, root1, root2);
+                mst_edges[root1] = min_edges[i];
+            }
             //idea is to always write into the smaller root because by the 
             //way union is written, we contract smaller into bigger (not by rank)
             //and so once a node is contracted it's as if we've found it's edge
-            if(root2 < root1)
+            /*if(root2 < root1)
                 mst_edges[root2] = min_edges[i];
             else
                 mst_edges[root1] = min_edges[i];
+                */
+
         }
 
         #pragma omp parallel for schedule(static)
@@ -124,6 +141,7 @@ void find_MST_parallel_star(Graph g){
             is_first_passes[i] = true;
             is_contracted[i] = false;
         }
+        /*
         //update all the components - if we do this do we still need to
         //find in the first section
         #pragma omp parallel for schedule(static)
@@ -140,9 +158,9 @@ void find_MST_parallel_star(Graph g){
         #pragma omp parallel for schedule(static)
         for(int i = 1; i < n; i++){
             if(components[i].parent != components[0].parent)
-                component_check = false;;
+                component_check = false;
         }
-        not_one_component = !component_check; 
+        not_one_component = !component_check; */
         //TODO oh no, but now we've lost our ability to deal with non-connected things
         //because we don't have any way of checking prev_num_components to num_componens
         //maybe we can have a bool such as  did_contract because as long as you have

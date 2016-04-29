@@ -30,18 +30,19 @@ void union_seq(struct set *sets, int v1, int v2){
 
 //this should union the smaller node onto the larger
 bool link_parallel(struct set *sets, int x, int y){
-    if(x < y){
+    //if(x < y){
         return __sync_bool_compare_and_swap(&sets[x].parent, x, y);
-    }
-    else{
-        return __sync_bool_compare_and_swap(&sets[y].parent, y, x); 
-    }
+    //}
+    //else{
+    //    return __sync_bool_compare_and_swap(&sets[y].parent, y, x); 
+    //}
 }
 int find_parallel(struct set *sets, int vertex){
-    if(sets[vertex].parent != vertex)
+    /*if(sets[vertex].parent != vertex)
         sets[vertex].parent = find_parallel(sets, sets[vertex].parent);
     return sets[vertex].parent;
-    /*int parent = sets[vertex].parent;
+    */
+    int parent = sets[vertex].parent;
     if(vertex != parent){
         int newp = find_parallel(sets, parent);
         __sync_bool_compare_and_swap(&sets[vertex].parent, parent, newp);
@@ -49,7 +50,7 @@ int find_parallel(struct set *sets, int vertex){
     }
     else{
         return vertex;
-    }*/
+    }
 }  
 
 void union_parallel(struct set *sets, int x, int y){

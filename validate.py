@@ -29,7 +29,9 @@ def validateBoruvka(filename):
             #    mismatchedEdges.add(e)
             
     f.close()
-    return (len(mstEdgesSeq.symmetric_difference(mstEdgesPar)) == 0)
+    symmDiff = mstEdgesSeq.symmetric_difference(mstEdgesPar);
+    print symmDiff
+    return (len(symmDiff) == 0)
 
 filename = sys.argv[1]
 print validateBoruvka(filename)
