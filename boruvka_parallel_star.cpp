@@ -12,28 +12,25 @@ void find_MST_parallel_star(Graph g){
     struct Edge* min_edges = new struct Edge[n];
     struct set *components = new struct set[n];
 
-    struct Edge* mst_edges = new struct Edge[n-1];
-    //int mst_edges_idx = 0;
+    struct Edge* mst_edges = new struct Edge[n];
 
     bool *coin_flips = new bool[n];
-    bool not_one_component = true;
+    //bool not_one_component = true;
     //keeps track of which tails have been contracted
     bool *is_contracted = new bool[n];
     
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
-
     //loop guard - did the graph get smaller - only needs to be set by
     //at least one thread so it should work in the parallel version
-    bool is_smaller = true;
+    bool can_be_contracted = true;
 
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < n; i++){
         components[i].parent = i;
         components[i].rank = 0;
         is_first_passes[i] = true;
-        is_contracted[i] = false;
     }
 
     //continue looping until there's only 1 component
@@ -42,7 +39,7 @@ void find_MST_parallel_star(Graph g){
     //not_one_component (you would go one extra iteration but it could be worth 
     //it instad of having to loop through the components list every iteration -
     //but one iteration could be just as expensive so we'll have to see)
-    while(is_smaller){
+    while(can_be_contracted){
         #pragma omp parallel for schedule(dynamic, 256)
         for(int j = 0; j < n; j++){
             if(find_parallel(components, j) == j){
@@ -87,9 +84,9 @@ void find_MST_parallel_star(Graph g){
         }
 
         //do this so we can see if any thread sets to true meaning something got contracted
-        is_smaller = false;
+        can_be_contracted = false;
         //star contraction - we'll say 1 is HEADS and 0 is TAILS
-        //#pragma omp parallel for schedule(dynamic, 256) 
+        #pragma omp parallel for schedule(dynamic, 256) 
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;
@@ -99,6 +96,7 @@ void find_MST_parallel_star(Graph g){
             if(root1 == root2){
                 continue;
             }
+            can_be_contracted = true;
             //you wouldn't contract in case of both heads or both tails
             if((coin_flips[root1] == coin_flips[root2])){
                 continue;
@@ -107,16 +105,13 @@ void find_MST_parallel_star(Graph g){
             //I think this should be correct by how CAS works
             //mark the tail as having been contracted
             if(coin_flips[root1]){
-                if(!__sync_bool_compare_and_swap(&is_contracted[root2],false,true)){
+                if(!__sync_bool_compare_and_swap(&is_contracted[root2],false,true))
                     continue;
-                }
             }
             else{
-                if(!__sync_bool_compare_and_swap(&is_contracted[root1],false,true)){
+                if(!__sync_bool_compare_and_swap(&is_contracted[root1],false,true))
                     continue;
-                }
             }
-            is_smaller = true;
             if(coin_flips[root1]){
                 union_parallel(components, root2, root1);
                 mst_edges[root2] = min_edges[i];
@@ -139,7 +134,6 @@ void find_MST_parallel_star(Graph g){
         #pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
-            is_contracted[i] = false;
         }
         /*
         //update all the components - if we do this do we still need to
@@ -169,7 +163,11 @@ void find_MST_parallel_star(Graph g){
         //guarantee connected graphs now?)
     }
 
-    for(int i = 0; i < n-1; i++){
+    for(int i = 0; i < n; i++){
+        if(mst_edges[i].src == 0 && mst_edges[i].dest == 0)
+            continue;
+        if(mst_edges[i].src < 0 || mst_edges[i].src > n || mst_edges[i].dest < 0 || mst_edges[i].dest > n)
+            continue;
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     
