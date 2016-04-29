@@ -5,33 +5,7 @@
 
 #include "boruvka_parallel.h"
 #include "union_find.h"
-/*
-Edge minEdge(Edge x, Edge y) {
-    if(x.weight < y.weight) {
-        return x;
-    } else {
-        return y;
-    }
-}
 
-void atomicMin(Edge* addr, Edge x) {
-    Edge old = *addr;
-    Edge newVal = minEdge(old, x);
-    while(__sync_val_compare_and_swap(addr, old, newVal) != old) {
-        old = *addr;
-        newVal = minEdge(old, x);
-    }
-}
-
-void atomicAdd(int* addr, int x) {
-    int old = *addr;
-    int newVal = old + x;
-    while(__sync_val_compare_and_swap(addr, old, newVal) != old) {
-        old = *addr;
-        newVal = old + x;
-    }
-}
-*/
 void find_MST_parallel(Graph g){
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
@@ -95,8 +69,9 @@ void find_MST_parallel(Graph g){
                 }
             }
         }
-        //contract based on min edges found
-        //#pragma omp parallel for schedule(dynamic, 256)
+        //contract based on min edges found 
+        //uses edge contraction which we couldn't think of a good way
+        //to parallelize
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;
@@ -106,28 +81,10 @@ void find_MST_parallel(Graph g){
             if(root1 == root2){
                 continue;
             }
-            union_seq(components, root1, root2);
-            //union_parallel(components, root1, root2);
-            //edge doesn't exist in mst edges yet
-            //Edge e1 = temp_edges[root1];
-            //Edge e2 = temp_edges[root2];
-            //if(e1.src == -1 && e2.src == -1){
-            //    temp_edges[root1] = min_edges[i];
-            //}
-            //else if(e1.src == -1 &&(e2.src == src && e2))
-            //for edges found, add to mst
-            //#pragma omp critical
-            //{
-            //add the edge in the index of smaller value
-            //since we're always unioning onto larger node
-                mst_edges[mst_edges_idx] = min_edges[i];
-            //}
-                //atomicAdd(&mst_edges_idx, 1);
-                //atomicAdd(&num_components, -1);
-                mst_edges_idx += 1;
-                num_components--;
-           //}
-            
+            union_parallel(components, root1, root2);
+            mst_edges[mst_edges_idx] = min_edges[i];
+            mst_edges_idx += 1;
+            num_components--;
         }
 
         #pragma omp parallel for schedule(static)
@@ -139,7 +96,19 @@ void find_MST_parallel(Graph g){
     for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
-    
+    /** i'm just saving this part bc i'll need it for star contraction
+    #pragma omp parallel for schedule(static)
+    for(int i = 0; i < n; i++){
+        find_parallel(components, i);
+    }
+    int x = 0;
+    #pragma omp parallel for schedule(static)
+    for(int i = 1; i < n; i++){
+        if(components[i].parent != components[0].parent)
+            x = 1;
+    } 
+    printf("%d\n", x);
+    **/
     delete[] min_edges;
     delete[] components;
 }

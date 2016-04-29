@@ -4,6 +4,7 @@
 
 #include "boruvka_sequential.h"
 #include "boruvka_parallel.h"
+#include "boruvka_parallel_star.h"
 #include "graph.h"
 #include "union_find.h"
 #include "graph_tests.h"
@@ -36,11 +37,15 @@ int main(int argc, char** argv){
     
     printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
 
-    double startTimePar = CycleTimer::currentSeconds();
+    /*double startTimePar = CycleTimer::currentSeconds();
     find_MST_parallel(graph);
     double endTimePar = CycleTimer::currentSeconds();
     printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
-
+*/
+    double startTimeStar = CycleTimer::currentSeconds();
+    find_MST_parallel_star(graph);
+    double endTimeStar = CycleTimer::currentSeconds();
+    printf("Total time parallel star: %.20f\n", endTimeStar - startTimeStar);
     /*int V = 12;  
 
     //DEFINE GRAPH
