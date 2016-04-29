@@ -2,7 +2,8 @@ import sys
 
 def validateBoruvka(filename):
     mismatchedEdges = set()
-    mstEdges = set()
+    mstEdgesSeq = set()
+    mstEdgesPar = set()
     isSequential = True
     f = open(filename)
 
@@ -18,15 +19,17 @@ def validateBoruvka(filename):
         e = (int(elems[0]), int(elems[1]))
         eRev = (int(elems[1]), int(elems[0]))
         if isSequential:
-            mstEdges.add(e)
-            mstEdges.add(eRev)
+            mstEdgesSeq.add(e)
+            mstEdgesSeq.add(eRev)
         else:
-            parEdgeCount += 2
-            if e not in mstEdges and eRev not in mstEdges:
-                mismatchedEdges.add(e)
+            mstEdgesPar.add(e)
+            mstEdgesPar.add(eRev)
+            #parEdgeCount += 2
+            #if e not in mstEdges and eRev not in mstEdges:
+            #    mismatchedEdges.add(e)
             
     f.close()
-    return (mismatchedEdges, parEdgeCount == len(mstEdges))
+    return (len(mstEdgesSeq.symmetric_difference(mstEdgesPar)) == 0)
 
 filename = sys.argv[1]
 print validateBoruvka(filename)
