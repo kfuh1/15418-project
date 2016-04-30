@@ -6,7 +6,10 @@
 #include "boruvka_parallel.h"
 #include "union_find.h"
 
+#define THREADS 64
+
 void find_MST_parallel(Graph g){
+    omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
     struct Edge* min_edges = new struct Edge[n];

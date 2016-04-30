@@ -6,7 +6,9 @@
 #include "boruvka_parallel_star.h"
 #include "union_find.h"
 
+#define THREADS 64
 void find_MST_parallel_star(Graph g){
+    omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
     struct Edge* min_edges = new struct Edge[n];
@@ -19,6 +21,8 @@ void find_MST_parallel_star(Graph g){
     //keeps track of which tails have been contracted
     bool *is_contracted = new bool[n];
     
+    bool not_one_component = true;
+
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
@@ -73,7 +77,6 @@ void find_MST_parallel_star(Graph g){
             }
         }
 
-        //TODO: need to get rid of duplicates
         //TODO: need to rewrite union find so that it always contract the edge that we want
         //it to - this is necessary in star contraction so we contract into the HEAD        
         //determine which vertices will be star centers and which are satellites
@@ -115,27 +118,21 @@ void find_MST_parallel_star(Graph g){
             if(coin_flips[root1]){
                 union_parallel(components, root2, root1);
                 mst_edges[root2] = min_edges[i];
+                //is_first_passes[root1] = true;
             }
             else{
                 union_parallel(components, root1, root2);
                 mst_edges[root1] = min_edges[i];
+                //is_first_passes[root2] = true;
             }
-            //idea is to always write into the smaller root because by the 
-            //way union is written, we contract smaller into bigger (not by rank)
-            //and so once a node is contracted it's as if we've found it's edge
-            /*if(root2 < root1)
-                mst_edges[root2] = min_edges[i];
-            else
-                mst_edges[root1] = min_edges[i];
-                */
-
         }
 
         #pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
+            is_contracted[i] = false;
         }
-        /*
+/*        
         //update all the components - if we do this do we still need to
         //find in the first section
         #pragma omp parallel for schedule(static)
@@ -168,7 +165,7 @@ void find_MST_parallel_star(Graph g){
             continue;
         if(mst_edges[i].src < 0 || mst_edges[i].src > n || mst_edges[i].dest < 0 || mst_edges[i].dest > n)
             continue;
-        printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
+        printf("%d, %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     
     delete[] min_edges;

@@ -36,18 +36,18 @@ int main(int argc, char** argv){
     double endTimeSeq = CycleTimer::currentSeconds();
     
     printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
-/*
-    double startTimePar = CycleTimer::currentSeconds();
+
+    /*double startTimePar = CycleTimer::currentSeconds();
     find_MST_parallel(graph);
     double endTimePar = CycleTimer::currentSeconds();
     printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
 */
-
     
     double startTimeStar = CycleTimer::currentSeconds();
     find_MST_parallel_star(graph);
     double endTimeStar = CycleTimer::currentSeconds();
     printf("Total time parallel star: %.20f\n", endTimeStar - startTimeStar);
+    
     /*int V = 12;  
 
     //DEFINE GRAPH
