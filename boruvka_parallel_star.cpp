@@ -21,7 +21,7 @@ void find_MST_parallel_star(Graph g){
     //keeps track of which tails have been contracted
     bool *is_contracted = new bool[n];
     
-    bool not_one_component = true;
+    //bool not_one_component = true;
 
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
@@ -118,12 +118,10 @@ void find_MST_parallel_star(Graph g){
             if(coin_flips[root1]){
                 union_parallel(components, root2, root1);
                 mst_edges[root2] = min_edges[i];
-                //is_first_passes[root1] = true;
             }
             else{
                 union_parallel(components, root1, root2);
                 mst_edges[root1] = min_edges[i];
-                //is_first_passes[root2] = true;
             }
         }
 
@@ -160,14 +158,14 @@ void find_MST_parallel_star(Graph g){
         //guarantee connected graphs now?)
     }
 
-    for(int i = 0; i < n; i++){
+/*    for(int i = 0; i < n; i++){
         if(mst_edges[i].src == 0 && mst_edges[i].dest == 0)
             continue;
         if(mst_edges[i].src < 0 || mst_edges[i].src > n || mst_edges[i].dest < 0 || mst_edges[i].dest > n)
             continue;
         printf("%d, %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
-    
+  */  
     delete[] min_edges;
     delete[] components;
 }

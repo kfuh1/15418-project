@@ -6,7 +6,7 @@
 #include "boruvka_parallel.h"
 #include "union_find.h"
 
-#define THREADS 64
+#define THREADS 16
 
 void find_MST_parallel(Graph g){
     omp_set_num_threads(THREADS);
@@ -15,6 +15,11 @@ void find_MST_parallel(Graph g){
     struct Edge* min_edges = new struct Edge[n];
     struct set *components = new struct set[n];
     int num_components = n;
+
+    bool can_be_contracted = true;
+    //int *weights = new int[n];
+    //int *dests = new int[n];
+
 
     //use this stuff so you can write into the temp_edges array in parallel
     //then sequentially loop through it and insert into the actual mst_edges
@@ -28,7 +33,7 @@ void find_MST_parallel(Graph g){
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
-    int prev_num_components;
+    int prev_num_components = 0;
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < n; i++){
         components[i].parent = i;
@@ -38,9 +43,10 @@ void find_MST_parallel(Graph g){
 
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
-    while(num_components > 1 && prev_num_components != num_components){
+//    while(num_components > 1 && prev_num_components != num_components){
+    while(can_be_contracted){
         prev_num_components = num_components;
-        #pragma omp parallel for schedule(dynamic, 256)
+        #pragma omp parallel for schedule(dynamic)
         for(int j = 0; j < n; j++){
             if(find_parallel(components, j) == j){
             //find minimum weight edge out of each componenet
@@ -61,6 +67,7 @@ void find_MST_parallel(Graph g){
                                 e.dest = *v;
                                 e.weight = g->weights[g->offsets[i] + weight_offset];
                                 if(is_first_passes[set1]){
+                                    //weights[set1] = w;
                                     min_edges[set1] = e; 
                                     is_first_passes[set1] = false;
                                 }
@@ -72,6 +79,7 @@ void find_MST_parallel(Graph g){
                 }
             }
         }
+        can_be_contracted = false;
         //contract based on min edges found 
         //uses edge contraction which we couldn't think of a good way
         //to parallelize
@@ -79,39 +87,28 @@ void find_MST_parallel(Graph g){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;
 
-            int root1 = find_parallel(components, src);
-            int root2 = find_parallel(components, dest);
+            int root1 = find_seq(components, src);
+            int root2 = find_seq(components, dest);
+            is_first_passes[i] = true;
             if(root1 == root2){
                 continue;
             }
-            union_parallel(components, root1, root2);
+            can_be_contracted = true;
+            union_seq(components, root1, root2);
             mst_edges[mst_edges_idx] = min_edges[i];
             mst_edges_idx += 1;
-            num_components--;
+            //num_components--;
         }
 
-        #pragma omp parallel for schedule(static)
+/*        #pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
-        }
+        }*/
     }
 
-    for(int i = 0; i < n-1; i++){
+    /*for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
-    }
-    /** i'm just saving this part bc i'll need it for star contraction
-    #pragma omp parallel for schedule(static)
-    for(int i = 0; i < n; i++){
-        find_parallel(components, i);
-    }
-    int x = 0;
-    #pragma omp parallel for schedule(static)
-    for(int i = 1; i < n; i++){
-        if(components[i].parent != components[0].parent)
-            x = 1;
-    } 
-    printf("%d\n", x);
-    **/
+    }*/
     delete[] min_edges;
     delete[] components;
 }
