@@ -14,6 +14,9 @@
 void find_MST_parallel_edge(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
+    
+    omp_lock_t *locks = new omp_lock_t[n];
+
     //store the edge index of the min weight edge incident on node i
     struct Edge* min_edges = new struct Edge[n];
     struct set *components = new struct set[n];
@@ -30,12 +33,13 @@ void find_MST_parallel_edge(Graph g){
         components[i].parent = i;
         components[i].rank = 0;
         is_first_passes[i] = true;
+        omp_init_lock(&(locks[i]));
     }
 
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
     while(can_be_contracted){
-        #pragma omp parallel for schedule(dynamic, THREADS)
+        #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, THREADS)
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g,i);
@@ -44,12 +48,24 @@ void find_MST_parallel_edge(Graph g){
             for(const Vertex* v = start; v < end; v++){
                 int set2 = find_parallel(components, *v);
                 weight_offset++;
-                if(set1 >= set2)
+                if(set1 == set2)
                     continue;
                 Edge e;
                 e.src = i;
                 e.dest = *v;
                 e.weight = g->weights[g->offsets[i] + weight_offset];
+
+                omp_set_lock(&(locks[set1]));
+
+                if(is_first_passes[set1]){
+                    min_edges[set1] = e;
+                    is_first_passes[set1] = false;
+                }
+                else if(min_edges[set1].weight > e.weight)
+                    min_edges[set1] = e;
+
+                omp_unset_lock(&(locks[set1]));
+                /*
                 #pragma omp critical
                 {
                     if(is_first_passes[set1]){
@@ -65,6 +81,7 @@ void find_MST_parallel_edge(Graph g){
                     else if(min_edges[set2].weight > e.weight)
                         min_edges[set2] = e;
                 }
+                */
             }
         }
 
@@ -94,10 +111,11 @@ void find_MST_parallel_edge(Graph g){
             is_first_passes[i] = true;
         }*/
     }
-
-/*    for(int i = 0; i < n-1; i++){
+/*
+    for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
-    }*/
+    }
+    */
     delete[] min_edges;
     delete[] components;
 }
