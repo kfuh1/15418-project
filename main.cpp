@@ -5,7 +5,6 @@
 #include "boruvka_sequential.h"
 #include "boruvka_parallel.h"
 #include "boruvka_parallel_star.h"
-#include "boruvka_parallel_edge.h"
 #include "graph.h"
 #include "union_find.h"
 #include "graph_tests.h"
@@ -38,16 +37,10 @@ int main(int argc, char** argv){
     
     printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
 
-    /*double startTimePar = CycleTimer::currentSeconds();
+    double startTimePar = CycleTimer::currentSeconds();
     find_MST_parallel(graph);
     double endTimePar = CycleTimer::currentSeconds();
     printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
-*/
-    //remember that the "Edge" in the name refers to finding by edges
-    double startTimeParEdge = CycleTimer::currentSeconds();
-    find_MST_parallel_edge(graph);
-    double endTimeParEdge = CycleTimer::currentSeconds();
-    printf("Total time parallel find by edge: %.20f\n", endTimeParEdge - startTimeParEdge);
 
     /*
     double startTimeStar = CycleTimer::currentSeconds();
