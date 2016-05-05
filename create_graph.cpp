@@ -54,6 +54,7 @@ Graph create_graph(char *filename){
         offset_count++;
     }
     myfile.close();
+    delete[] line_arr;
     /*for(int i = 0; i < V; i++){
         if(i == V-1){
             for(int k = g->offsets[i]; k < 2 * E; k++){

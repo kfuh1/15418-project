@@ -3,17 +3,19 @@ import random
 def getKey(item):
     return item[0]
 
+#E is the number of undirected edges
 def createGraph(V, E, seed, graphName):
     random.seed(seed)
     edgeSet = set()
     edges = []
-
+    weight = 0
     count = 0
     arrIdx = 0
     while count < E:
         v1 = random.randint(0,V-1)
         v2 = random.randint(0,V-1)
-        weight = random.randint(1,100)
+        weight += 1
+        #weight = random.randint(1,100)
         if v1 == v2:
             continue
         if (v1, v2) in edgeSet:
@@ -31,5 +33,11 @@ def createGraph(V, E, seed, graphName):
         f.write(str(edge[0]) + " " + str(edge[1]) + " " + str(edge[2]) + "\n")
     f.close()
             
-createGraph(5,10,1,"graph.txt")
-
+#createGraph(5,10,1,"graph.txt")
+#createGraph(100,500,1,"graph2.txt")
+#createGraph(100,4950,1,"graph3.txt")
+#createGraph(20,190,1,"graph4.txt")
+#createGraph(4,6,1,"graph5.txt")
+#createGraph(4039,88234,1,"graph5_distinct_w.txt")
+#createGraph(5000,94300,2,"graph6_distinct_w.txt")
+createGraph(1000000, 9000000, 2, "graph7_distinct_w.txt")

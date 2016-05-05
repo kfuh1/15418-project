@@ -3,20 +3,15 @@
 #include "union_find.h"
 
 int find_seq(struct set *sets, int vertex){
-    int parent = sets[vertex].parent;
-    if(vertex != parent){
-        sets[vertex].parent = find_seq(sets, parent);
-    }
-    return parent;
+    if(sets[vertex].parent != vertex)
+        sets[vertex].parent = find_seq(sets, sets[vertex].parent);
+    return sets[vertex].parent;
 }
 
 void union_seq(struct set *sets, int v1, int v2){
     int root1 = find_seq(sets, v1);
     int root2 = find_seq(sets, v2);
 
-    if(root1 == root2){
-        return;
-    }
     int rank1 = sets[root1].rank;
     int rank2 = sets[root2].rank;
     
@@ -29,19 +24,24 @@ void union_seq(struct set *sets, int v1, int v2){
     //decision to add to the root1 subset was arbitrary
     else{
         sets[root1].parent = root2;
-        sets[root1].rank++;
+        sets[root2].rank++;
     }
 }
 
+//this should union the smaller node onto the larger
 bool link_parallel(struct set *sets, int x, int y){
-    if(x < y){
+    //if(x < y){
         return __sync_bool_compare_and_swap(&sets[x].parent, x, y);
-    }
-    else{
-        return __sync_bool_compare_and_swap(&sets[y].parent, y, x); 
-    }
+    //}
+    //else{
+    //    return __sync_bool_compare_and_swap(&sets[y].parent, y, x); 
+    //}
 }
 int find_parallel(struct set *sets, int vertex){
+    /*if(sets[vertex].parent != vertex)
+        sets[vertex].parent = find_parallel(sets, sets[vertex].parent);
+    return sets[vertex].parent;
+    */
     int parent = sets[vertex].parent;
     if(vertex != parent){
         int newp = find_parallel(sets, parent);

@@ -4,6 +4,8 @@
 
 #include "boruvka_sequential.h"
 #include "boruvka_parallel.h"
+#include "boruvka_parallel_star.h"
+#include "boruvka_parallel_edge.h"
 #include "graph.h"
 #include "union_find.h"
 #include "graph_tests.h"
@@ -18,10 +20,41 @@ int main(int argc, char** argv){
     //Graph graph = load_graph_binary(filename); //using graph binaries assignment 3
 
     Graph graph = create_graph(filename);
+    //printf("%d, %d\n", graph->num_nodes, graph->num_edges);
+    //int weight_idx = 0; 
+    /*for (int i = 0; i < graph->num_nodes; i++) {
+        printf("src: %d\n", i);
+        const Vertex* start = edges_begin(graph, i);
+        const Vertex* end = edges_end(graph, i);
+        for(const Vertex* v = start; v < end; v++){
+            printf("dest: %d, weight: %d\n", *v, graph->weights[weight_idx]);
+            weight_idx++;
+        }  
+    }*/
 
-    find_MST(graph);
+    double startTimeSeq = CycleTimer::currentSeconds();
+    find_MST(graph); 
+    double endTimeSeq = CycleTimer::currentSeconds();
     
-    
+    printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
+
+    /*double startTimePar = CycleTimer::currentSeconds();
+    find_MST_parallel(graph);
+    double endTimePar = CycleTimer::currentSeconds();
+    printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
+*/
+    //remember that the "Edge" in the name refers to finding by edges
+    double startTimeParEdge = CycleTimer::currentSeconds();
+    find_MST_parallel_edge(graph);
+    double endTimeParEdge = CycleTimer::currentSeconds();
+    printf("Total time parallel find by edge: %.20f\n", endTimeParEdge - startTimeParEdge);
+
+    /*
+    double startTimeStar = CycleTimer::currentSeconds();
+    find_MST_parallel_star(graph);
+    double endTimeStar = CycleTimer::currentSeconds();
+    printf("Total time parallel star: %.20f\n", endTimeStar - startTimeStar);
+    */
     /*int V = 12;  
 
     //DEFINE GRAPH
