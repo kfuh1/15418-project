@@ -83,7 +83,10 @@ void find_MST(Graph g){
     //handles the case of disconnected graphs where there would be fewer than
     //n-1 edges in the mst
     /*for(int i = 0; i < n-num_components; i++){
+<<<<<<< HEAD
 >>>>>>> temporary push
+=======
+>>>>>>> 780a246cb6d1301c1229cd53eb308acf0e1e2930
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     printf("end sequential\n"); */
