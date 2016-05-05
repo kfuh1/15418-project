@@ -10,10 +10,6 @@ void find_MST(Graph g){
     struct Edge* min_edges = new struct Edge[n];
     struct set *components = new struct set[n];
     int num_components = n;
-<<<<<<< HEAD
-    int prev_num_components = 0;
-=======
->>>>>>> temporary push
 
     struct Edge* mst_edges = new struct Edge[n-1];
     int mst_edges_idx = 0;
@@ -77,16 +73,14 @@ void find_MST(Graph g){
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
         }
+        
     }
 
 
     //handles the case of disconnected graphs where there would be fewer than
     //n-1 edges in the mst
-    /*for(int i = 0; i < n-num_components; i++){
-<<<<<<< HEAD
->>>>>>> temporary push
-=======
->>>>>>> 780a246cb6d1301c1229cd53eb308acf0e1e2930
+//    for(int i = 0; i < n-num_components; i++){
+    /*for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
     printf("end sequential\n"); */

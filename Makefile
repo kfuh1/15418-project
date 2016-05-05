@@ -16,7 +16,7 @@ dirs:
 clean:
 		/bin/rm -rf $(OBJDIR) *~ $(APP_NAME)
 
-OBJS=$(OBJDIR)/main.o $(OBJDIR)/union_find.o $(OBJDIR)/boruvka_sequential.o ${OBJDIR}/boruvka_parallel.o ${OBJDIR}/boruvka_parallel_star.o ${OBJDIR}/graph.o $(OBJDIR)/graph_tests.o ${OBJDIR}/create_graph.o
+OBJS=$(OBJDIR)/main.o $(OBJDIR)/union_find.o $(OBJDIR)/boruvka_sequential.o ${OBJDIR}/boruvka_parallel.o ${OBJDIR}/boruvka_parallel_star.o ${OBJDIR}/boruvka_parallel_edge.o ${OBJDIR}/graph.o $(OBJDIR)/graph_tests.o ${OBJDIR}/create_graph.o
 
 $(APP_NAME): dirs $(OBJS)
 		$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
