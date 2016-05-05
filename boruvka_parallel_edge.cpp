@@ -34,7 +34,6 @@ void find_MST_parallel_edge(Graph g){
 
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
-//    while(num_components > 1 && prev_num_components != num_components){
     while(can_be_contracted){
         #pragma omp parallel for schedule(dynamic, THREADS)
         for(int i = 0; i < n; i++){
