@@ -7,7 +7,7 @@
 #include "union_find.h"
 
 #define THREADS 16
-
+#define CHUNKSIZE 128
 void find_MST_parallel(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
@@ -46,7 +46,7 @@ void find_MST_parallel(Graph g){
 //    while(num_components > 1 && prev_num_components != num_components){
     while(can_be_contracted){
         prev_num_components = num_components;
-        #pragma omp parallel for schedule(dynamic)
+        #pragma omp parallel for schedule(dynamic, CHUNKSIZE)
         for(int j = 0; j < n; j++){
             if(find_parallel(components, j) == j){
             //find minimum weight edge out of each componenet
@@ -100,10 +100,6 @@ void find_MST_parallel(Graph g){
             //num_components--;
         }
 
-/*        #pragma omp parallel for schedule(static)
-        for(int i = 0; i < n; i++){
-            is_first_passes[i] = true;
-        }*/
     }
 
     /*for(int i = 0; i < n-1; i++){

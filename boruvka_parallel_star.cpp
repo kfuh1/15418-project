@@ -7,6 +7,8 @@
 #include "union_find.h"
 
 #define THREADS 64
+#define CHUNKSIZE 128
+
 void find_MST_parallel_star(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
@@ -44,7 +46,7 @@ void find_MST_parallel_star(Graph g){
     //it instad of having to loop through the components list every iteration -
     //but one iteration could be just as expensive so we'll have to see)
     while(can_be_contracted){
-        #pragma omp parallel for schedule(dynamic, 256)
+        #pragma omp parallel for schedule(dynamic, CHUNKSIZE)
         for(int j = 0; j < n; j++){
             if(find_parallel(components, j) == j){
             //find minimum weight edge out of each componenet
@@ -89,7 +91,7 @@ void find_MST_parallel_star(Graph g){
         //do this so we can see if any thread sets to true meaning something got contracted
         can_be_contracted = false;
         //star contraction - we'll say 1 is HEADS and 0 is TAILS
-        #pragma omp parallel for schedule(dynamic, 256) 
+        #pragma omp parallel for schedule(dynamic, CHUNKSIZE) 
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;

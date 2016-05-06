@@ -7,6 +7,7 @@
 #include "union_find.h"
 
 #define THREADS 16
+#define CHUNKSIZE 128
 
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
@@ -43,7 +44,7 @@ void find_MST_parallel_star2(Graph g){
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
     while(can_be_contracted){
-        #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, THREADS)
+        #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, CHUNKSIZE)
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g,i);
@@ -81,7 +82,7 @@ void find_MST_parallel_star2(Graph g){
         //contract based on min edges found 
         //uses edge contraction which we couldn't think of a good way
         //to parallelize
-        #pragma omp parallel for schedule(dynamic, 256) 
+        #pragma omp parallel for schedule(dynamic, CHUNKSIZE) 
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
             int dest = min_edges[i].dest;
