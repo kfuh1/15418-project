@@ -52,7 +52,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Summary</h4>
-            <p></p>
+            <p>For our project, we wrote a sequential version of Borůvka’s algorithm for finding minimum spanning trees in C++ and optimized its performance on a CPU using OpenMP and parallelizing techniques. In the process of parallelizing, we explored both edge and star contraction techniques for Bor&#367vka’s algorithm. We then analyzed the performance on the GHC machines with various numbers of threads.</p>
           </div>
         </div>
       </div>
@@ -63,7 +63,24 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Background</h4>
-            <p></p>
+            <p>A spanning tree of a connected, undirected graph <i>G</i> with vertex set <i>V</i> and edge set <i>E</i> is a connected subgraph of <i>G</i> that includes all vertices of <i>G</i> and exactly |<i>V</i>|-1 edges. When given a connected, weighted, undirected graph, the minimum spanning tree (MST) is a spanning tree with minimum total edge weight.</p>
+            <p>The key property that drives many MST algorithms is the light edge property. This property states that for any cut of a connected, undirected, weighted graph <i>G</i>, the edge with minimum weight that crosses the cut must be in the MST.</p>
+            <p>Bor&#367vka’s algorithm is a well-known parallel algorithm for finding MSTs. It makes use of the light edge property by observing that the minimum weight edge incident on any vertex <i>v</i> must be in the MST (the cut of the graph in this case partitions the graph into one set containing the single vertex <i>v</i> and a second set containing the rest of the graph). This observation introduces an axis of parallelism along vertices because edges in the MST can be selected in parallel by looking at each vertex. Using this idea, Bor&#367vka’s algorithm works as follows</p>
+            <p>While there are still edges:</p>
+            <ol>
+              <li>Find the minimum weight edge incident on each vertex (these edges will form at least one connected component)</li>
+              <li>Contract each connected component, creating a new super vertex for all vertices in the component</li>
+              <li>Add the minimum weight edge between super vertices to the MST and remove all other redundant edges.</li>
+            </ol>
+            <p>There are two different techniques to approaching this algorithm when contracting the graph: edge contraction and star contraction:</p>
+            <ol>
+              <li>Edge contraction: Edge contraction involves finding the min edge incident to each vertex (in the first iteration) and each component thereafter. We then add these edges to our MST and perform the necessary contractions in the contraction stage. This utilizes the light-end property as was discussed above</li>
+              <li>Star contraction: Star contraction involves flipping a coin for each vertex/ component and finding the heads and tails. This is necessary in star contraction, so we contract into the head and so that we can determine what are the star centers and star satellites. Particularly, we make 0 mean you are a satellite (false) and 1 mean you are a star center (true).</li>
+            <ol>
+            <p>Here are some implementation details:</p>
+            <ol>
+              <li>Our algorithm takes in a graph structure as input and prints out the edges of the MST</li>
+            </ol>
           </div>
         </div>
       </div>
