@@ -77,10 +77,7 @@
               <li><b>Edge contraction</b>: Edge contraction involves finding the min edge incident to each vertex (in the first iteration) and each component thereafter. We then add these edges to our MST and perform the necessary contractions in the contraction stage. This utilizes the light-end property as was discussed above</li>
               <li><b>Star contraction</b>: Star contraction involves flipping a coin for each vertex/ component and finding the heads and tails. This is necessary in star contraction, so we contract into the head and so that we can determine what are the star centers and star satellites. Particularly, we make 0 mean you are a satellite (false) and 1 mean you are a star center (true).</li>
             </ol>
-            <p>Here are some <b>implementation details</b>:</p>
-            <ul>
-              <li>Our algorithm takes in a graph structure as input and prints out the edges of the MST</li>
-            </ul>
+            <p>Here are some <b>implementation details</b>: Our algorithm takes in a graph structure as input and prints out the edges of the MST</p>
             <p><b>Key data structures:</b></p>
             <ul>
               <li><b>Union find data structure</b>: Our union find is based on having a struct which holds information about the parent and rank of each node. This allows us to store information about which component each node belongs to in order to determine which edges are valid edges to contract.</li>
@@ -98,7 +95,7 @@
               <li>Finding min edges could be computationally expensive based on what axis of parallelism is necessary, especially since we were using the same graph on every iteration rather than actually creating a new contracted graph. We found that we were doing extra work here and had to change our approach as we explain in the next section</li>
               <li>The contraction stage also had dependencies based on the union-find operations that were done on both endpoints of the edge being contracted. This introduced a critical region that we had to fix. Our approach to account for this is also explained in the next section</li>
             </ul>
-            <p>Other challenges:</p>
+            <p><b>Other challenges:</b></p>
             <ul>
               <li>Creating graphs (explained in the Approach section)</li>
               <li>Writing a lock-free union data structure, so that we could decrease the granularity of our locking and critical sections</li>
