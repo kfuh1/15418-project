@@ -88,7 +88,7 @@
             <p><b>Key operations:</b></p>
             <ul>
               <li>Find parent and union (read a paper which used compare and swap and that worked pretty well and allowed us to not have to lock up an entire section in order to call these functions)</li>
-              <li>We didn’t use the rank attribute for the parallel version of Boruvka’s because that would require an atomic increment which we thought wouldn’t be worth it</li>
+              <li>We didn’t use the rank attribute for the parallel version of Boruvka’s because that would require an atomic increment which we thought would result in some slowness</li>
             </ul>
             <p><b>Excessive computation and dependency challenges:</b></p>
             <ul>
