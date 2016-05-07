@@ -111,7 +111,20 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Approach</h4>
-            <p></p>
+            <p><b>Technologies:</b></p>
+            <ul>
+              <li>We used the GHC machines and C++ for this project. We also used some Python for graph creation and correctness checks. In order parallelize our implementation on the CPU we used OpenMP primitives.</li>
+              <li>TODO: specifications</li>
+            </ul>
+            <p><b>Graph Representation:</b></p>
+            <ul>
+              <li><b>Initial idea:</b> We determined that we wanted some kind of adjacency list because an adjacency matrix for high vertex counts would be space inefficient (to add to the space, we also needed weights so we would not be able to just use a boolean matrix). Because we need weights on the edges, we started by creating an Edge struct type that held a source, destination, and weight and then made an adjacency list such that each node had a linked list of all its edges. As we started working with this idea and implemented a sequential version of Boruvka’s with it, we realized that the linked list would not parallelize well and it would also require a lot of overhead in ensuring correctness if we continued with it for the parallel version</li>
+              <li><b>Final idea:</b> We modeled the undirected graph with an underlying representation of a directed graph (so a directed edge is listed in the graph twice for the two directions). We based our representation off of the representation used in assignment 3. Vertices were numbered from 0 to n-1 where n is the number of vertices. We used three arrays, one for offsets, one for destination vertices, and one for weights. The offsets array allowed us to index into the destinations and weights arrays (offset[i] gave us where vertex i’s out-edges started)</li>
+              <li>Note: The final graph representation, although easy to visualize, does not lend itself well to updating the graph itself. In 15-210 when we implemented Boruvka’s algorithm we could easily create a new graph by simply creating new vertex and edge sets every time we contracted the graph. Because of the calculation of offsets which would require sorting (and also require roughly twice the graphs size in space as we essentially make a copy of the graph), we decided we would keep the original graph and always operate on the original graph. We used a union-find data structure to handle the task of finding the component a vertex belonged to. The inability to update the graph as it contracts was a source of challenges as we will mention in the description of our many attempts at optimizations as detailed below.</li>
+            </ul>
+            <p><b>Graph Creation:</b></p>
+            <p>We had wanted to use large graphs created on SNAP, but after working with this and the assignment 3 code, we realized the undirectedness and weights of our graph made translation from assignment 3’s conversion code to our representation difficult. Because of that, we decided on creating our own graphs using pseudorandomness for generating edges and weights. Because our graph representation required sorting edges by source node in order to figure out offsets and C++ is not the easiest language to use for such a purpose, we determined our graph structure and values with Python, did all the necessary edge generation and sorting, wrote it out to a text file, and had C++ create the actual graphs using the file information.</p>
+            <p>For initial testing we made small graphs of about 20 to 30 nodes and 100 to 1000 edges. Because of the pseudorandomness there was no guarantee that the graphs would be connected, so we had to update our code to handle cases of disconnected graphs. Once we had the sequential version working (we tested sequential correctness by hand for smaller graphs), we used it as a correctness checker for our parallel versions. For correctness checking we removed the randomness for edge weights to ensure all edges had distinct weights (because there is guaranteed to be one correct MST if all edges are distinct). The validation program for checking correctness was also written in Python.</p>
           </div>
         </div>
       </div>
