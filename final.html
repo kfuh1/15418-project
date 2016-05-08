@@ -175,17 +175,25 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Results</h4>
+              <p>Given that we are running on machine with 12 cores and 2 execution contexts per core, we know that we have 24 execution contexts. We would thus expect to get performance benefits and a speedup up until 24 threads. After 24 threads though, we would expect either worse speedup or no improvement; we still decided to run it just to see what would happen to performance due to creation and scheduling overhead.
+              
+              In order to collect results, we using wall clock timing with the CycleTimer module as in past assignments to determine performance of our algorithm on our large graph. It is important to note that we did not include time taken to create our graphs because this is independent of our algorithm’s implementation.
+              
+              We decided to collect results from running our algorithm on the largest graph because this is where the parallelism takes effect. We ran the algorithm on thread counts of 2, 4, 8, 12, 16, 24, 32, and 40.
+              </p>
               <img src="images/edge-graph.png" alt="Edge Graph" style="width:450px;height:330px;" class="center-block"/>
               <center><i>Figure 1: Sequential and parallel performance of edge contraction while finding min edges by edge</i></center>
-              <p>TODO: DESCRIBE</p>
+              <p>In Figure 1, we see that we get a speedup from increasing the number of threads. We also notice that after 24 threads, performance flattens out and does not get worse as expected. We think that the parallel version saw speed up because for finding edges, we used an axes of parallelism over the edge as opposed to the components. We additionally introduced the idea of fine grained locking, so that we are not locking the entire data structure.</p>
 
-              <img src="images/star-par.png" alt="Star Graph" style="width:450px;height:330px;" class="center-block">
+              <img src="images/star-par.png" alt="Star Graph Parallel" style="width:450px;height:330px;" class="center-block">
               <p><center><i>Figure 2: Sequential and parallel performance of star contraction while finding min edges by edge and doing coin flips in parallel</i></center>
-              <p>TODO: DESCRIBE</p>
+              <p>As we see in Figures 2 and 3, using star contraction actually caused the parallel version to become slower than the parallel version by edge contraction. We think this is due to the overhead of spawning threads, scheduling them, and then possibly having to execute more iterations of the while loop since star contraction is not guaranteed to contract all the edges at once (from an asymptotic analysis perspective, the math works out so that the edges number of edges left to be contracted decreases by a constant factor, but the actual performance on the machine may be worse).</p>
 
-              <img src="images/star-seq.png" alt="Star Graph" style="width:450px;height:330px;" class="center-block">
+              <img src="images/star-seq.png" alt="Star Graph Sequential" style="width:450px;height:330px;" class="center-block">
               <center><i>Figure 3: Sequential and parallel performance of star contraction while finding min edges by edge and doing coin flips sequentially</i></center>
-              <p>TODO: DESCRIBE</p>
+              <p>As seen in Figure 3, after removing the parallel coin flips (i.e. calls to the C++ rand() function) we saw better speedup for this parallel version (although still not as good as the sequential version). As for the issue of the parallel version being slower, we think the discussion under Figure 2 still applies here. Regarding the bit of speedup from changing the coin flips, we did not find very much information about the rand() implementation despite our research; however, we thought this could be due to the fact that it is a pseudorandom number generator that may have dependencies on the previous number generated, and so parallelizing was just adding extra overhead.</p>
+
+              <p>Please note: we were not able to collect results for the other 2 implementations because the runtime was way too slow to complete for the large graph.</p>
           </div>
         </div>
       </div>
