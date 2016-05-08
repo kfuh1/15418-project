@@ -2,12 +2,27 @@
 #include <stdio.h>
 #include <time.h>
 #include <omp.h>
-
+#include <random>
 #include "boruvka_parallel_star2.h"
 #include "union_find.h"
 
 #define THREADS 32
-#define CHUNKSIZE 64
+#define CHUNKSIZE 128
+
+static unsigned long x=123456789, y=36243609, z=521288628;
+unsigned int xorshf(){
+    unsigned long t;
+    x ^= x << 16;
+    x ^= x >> 5;
+    x ^= x << 1;
+
+    t = x;
+    x = y;
+    y = z;
+    z = t ^ x ^ y;
+
+    return ((int) (z % 2));
+}
 
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
@@ -29,6 +44,9 @@ void find_MST_parallel_star2(Graph g){
     bool *coin_flips = new bool[n];
     bool *is_contracted = new bool[n];
 
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution(0,1);
+    
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
@@ -45,6 +63,7 @@ void find_MST_parallel_star2(Graph g){
     while(can_be_contracted){
         #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, CHUNKSIZE)
         for(int i = 0; i < n; i++){
+            //coin_flips[i] = (xorshf() == 1);
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g,i);
             int weight_offset = -1;
@@ -72,9 +91,10 @@ void find_MST_parallel_star2(Graph g){
             }
         }
 
-        #pragma omp parallel for schedule(static)
+        //#pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             coin_flips[i] = ((rand() % 2) == 1);
+            //coin_flips[i] = (xorshf() == 1);
         }
 
         can_be_contracted = false;
@@ -105,12 +125,16 @@ void find_MST_parallel_star2(Graph g){
                     continue;
             }
             if(coin_flips[root1]){
+                //omp_set_lock(&(locks[root2]));
                 union_parallel(components, root2, root1);
                 mst_edges[root2] = min_edges[i];
+                //omp_unset_lock(&(locks[root2]));
             }
             else{
+                //omp_set_lock(&(locks[root1]));
                 union_parallel(components, root1, root2);
                 mst_edges[root1] = min_edges[i];
+                //omp_unset_lock(&(locks[root1]));
             }
         }
 
