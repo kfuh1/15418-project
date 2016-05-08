@@ -6,8 +6,8 @@
 #include "boruvka_parallel_star2.h"
 #include "union_find.h"
 
-#define THREADS 16
-#define CHUNKSIZE 128
+#define THREADS 32
+#define CHUNKSIZE 64
 
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
@@ -29,7 +29,6 @@ void find_MST_parallel_star2(Graph g){
     bool *coin_flips = new bool[n];
     bool *is_contracted = new bool[n];
 
-    int mst_edges_idx = 0;
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
@@ -89,6 +88,7 @@ void find_MST_parallel_star2(Graph g){
 
             int root1 = find_parallel(components, src);
             int root2 = find_parallel(components, dest);
+            is_first_passes[i] = true;
             if(root1 == root2){
                 continue;
             }
@@ -114,11 +114,11 @@ void find_MST_parallel_star2(Graph g){
             }
         }
 
-        #pragma omp parallel for schedule(static)
+        /*#pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
             is_contracted[i] = false;
-        }
+        }*/
     }
 /*
     for(int i = 0; i < n-1; i++){

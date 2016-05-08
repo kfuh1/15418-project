@@ -6,7 +6,7 @@
 #include "boruvka_parallel_edge.h"
 #include "union_find.h"
 
-#define THREADS 16
+#define THREADS 48
 
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
