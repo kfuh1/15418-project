@@ -6,6 +6,7 @@
 #include "boruvka_parallel.h"
 #include "union_find.h"
 
+#include "CycleTimer.h"
 #define THREADS 16
 #define CHUNKSIZE 128
 void find_MST_parallel(Graph g){
@@ -41,11 +42,16 @@ void find_MST_parallel(Graph g){
         is_first_passes[i] = true;
     }
 
+    double startTimeFind, endTimeFind;
+    double findTotal = 0.0;
+    double startTimeContract, endTimeContract;
+    double contractTotal = 0.0;
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
 //    while(num_components > 1 && prev_num_components != num_components){
     while(can_be_contracted){
         prev_num_components = num_components;
+        startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for schedule(dynamic, CHUNKSIZE)
         for(int j = 0; j < n; j++){
             if(find_parallel(components, j) == j){
@@ -79,6 +85,10 @@ void find_MST_parallel(Graph g){
                 }
             }
         }
+        endTimeFind = CycleTimer::currentSeconds();
+        findTotal += (endTimeFind - startTimeFind);
+
+        startTimeContract = CycleTimer::currentSeconds();
         can_be_contracted = false;
         //contract based on min edges found 
         //uses edge contraction which we couldn't think of a good way
@@ -100,8 +110,12 @@ void find_MST_parallel(Graph g){
             //num_components--;
         }
 
+        endTimeContract = CycleTimer::currentSeconds();
+        contractTotal += (endTimeContract - startTimeContract);
     }
 
+    printf("find time parallel comp edge: %.20f\n", findTotal);
+    printf("contract time parallel comp edge: %.20f\n", contractTotal);
     /*for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }*/

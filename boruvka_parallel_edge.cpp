@@ -5,6 +5,7 @@
 
 #include "boruvka_parallel_edge.h"
 #include "union_find.h"
+#include "CycleTimer.h"
 
 #define THREADS 48
 
@@ -28,6 +29,10 @@ void find_MST_parallel_edge(Graph g){
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
+    double startTimeFind, endTimeFind;
+    double findTotal = 0.0;
+    double startTimeContract, endTimeContract;
+    double contractTotal = 0.0;
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < n; i++){
         components[i].parent = i;
@@ -39,6 +44,7 @@ void find_MST_parallel_edge(Graph g){
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
     while(can_be_contracted){
+        startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, THREADS)
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
@@ -85,6 +91,10 @@ void find_MST_parallel_edge(Graph g){
             }
         }
 
+        endTimeFind = CycleTimer::currentSeconds();
+        findTotal += (endTimeFind - startTimeFind);
+
+        startTimeContract = CycleTimer::currentSeconds();
         can_be_contracted = false;
         //contract based on min edges found 
         //uses edge contraction which we couldn't think of a good way
@@ -106,6 +116,8 @@ void find_MST_parallel_edge(Graph g){
             //num_components--;
         }
 
+        endTimeContract = CycleTimer::currentSeconds();
+        contractTotal += (endTimeContract - startTimeContract);
 /*        #pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
@@ -116,6 +128,8 @@ void find_MST_parallel_edge(Graph g){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
   */  
+    printf("find time parallel edge edge: %.20f\n", findTotal);
+    printf("contract time parallel edge edge: %.20f\n", contractTotal);
     delete[] min_edges;
     delete[] components;
 }

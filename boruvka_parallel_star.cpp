@@ -5,6 +5,7 @@
 
 #include "boruvka_parallel_star.h"
 #include "union_find.h"
+#include "CycleTimer.h"
 
 #define THREADS 64
 #define CHUNKSIZE 128
@@ -39,6 +40,10 @@ void find_MST_parallel_star(Graph g){
         is_first_passes[i] = true;
     }
 
+    double startTimeFind, endTimeFind;
+    double findTotal = 0.0;
+    double startTimeContract, endTimeContract;
+    double contractTotal = 0.0;
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
     //TODO is it better to have one condition here and not have to deal with
@@ -46,6 +51,7 @@ void find_MST_parallel_star(Graph g){
     //it instad of having to loop through the components list every iteration -
     //but one iteration could be just as expensive so we'll have to see)
     while(can_be_contracted){
+        startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for schedule(dynamic, CHUNKSIZE)
         for(int j = 0; j < n; j++){
             if(find_parallel(components, j) == j){
@@ -79,6 +85,10 @@ void find_MST_parallel_star(Graph g){
             }
         }
 
+        endTimeFind = CycleTimer::currentSeconds();
+        findTotal += (endTimeFind - startTimeFind);
+
+        startTimeContract = CycleTimer::currentSeconds();
         //TODO: need to rewrite union find so that it always contract the edge that we want
         //it to - this is necessary in star contraction so we contract into the HEAD        
         //determine which vertices will be star centers and which are satellites
@@ -132,6 +142,8 @@ void find_MST_parallel_star(Graph g){
             is_first_passes[i] = true;
             is_contracted[i] = false;
         }
+        endTimeContract = CycleTimer::currentSeconds();
+        contractTotal += (endTimeContract - startTimeContract);
 /*        
         //update all the components - if we do this do we still need to
         //find in the first section
@@ -168,6 +180,8 @@ void find_MST_parallel_star(Graph g){
         printf("%d, %d\n", mst_edges[i].src, mst_edges[i].dest);
     }
   */  
+    printf("find time parallel comp star: %.20f\n", findTotal);
+    printf("contract time parallel comp star: %.20f\n", contractTotal);
     delete[] min_edges;
     delete[] components;
 }

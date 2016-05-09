@@ -5,8 +5,9 @@
 #include <random>
 #include "boruvka_parallel_star2.h"
 #include "union_find.h"
+#include "CycleTimer.h"
 
-#define THREADS 32
+#define THREADS 8
 #define CHUNKSIZE 128
 
 static unsigned long x=123456789, y=36243609, z=521288628;
@@ -44,9 +45,13 @@ void find_MST_parallel_star2(Graph g){
     bool *coin_flips = new bool[n];
     bool *is_contracted = new bool[n];
 
-    std::default_random_engine generator;
-    std::uniform_int_distribution<int> distribution(0,1);
+    //std::default_random_engine generator;
+    //std::uniform_int_distribution<int> distribution(0,1);
     
+    double startTimeFind, endTimeFind;
+    double findTotal = 0.0;
+    double startTimeContract, endTimeContract;
+    double contractTotal = 0.0;
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
@@ -61,6 +66,7 @@ void find_MST_parallel_star2(Graph g){
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
     while(can_be_contracted){
+        startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, CHUNKSIZE)
         for(int i = 0; i < n; i++){
             //coin_flips[i] = (xorshf() == 1);
@@ -91,6 +97,10 @@ void find_MST_parallel_star2(Graph g){
             }
         }
 
+        endTimeFind = CycleTimer::currentSeconds();
+        findTotal += (endTimeFind - startTimeFind);
+
+        startTimeContract = CycleTimer::currentSeconds();
         //#pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             coin_flips[i] = ((rand() % 2) == 1);
@@ -138,6 +148,8 @@ void find_MST_parallel_star2(Graph g){
             }
         }
 
+        endTimeContract = CycleTimer::currentSeconds();
+        contractTotal += (endTimeContract - startTimeContract);
         /*#pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
@@ -149,6 +161,8 @@ void find_MST_parallel_star2(Graph g){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
   */  
+    printf("find time parallel edge star: %.20f\n", findTotal);
+    printf("contract time parallel edge star: %.20f\n", contractTotal);
     delete[] min_edges;
     delete[] components;
 }

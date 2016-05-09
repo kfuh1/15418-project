@@ -4,6 +4,7 @@
 #include "graph.h"
 #include "union_find.h"
 
+#include "CycleTimer.h"
 void find_MST(Graph g){
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
@@ -18,6 +19,11 @@ void find_MST(Graph g){
     bool is_first_passes[n];
     int prev_num_components = 0;
 
+    double startTimeFind, endTimeFind;
+    double findTotal = 0.0;
+    double startTimeContract, endTimeContract;
+    double contractTotal = 0.0;
+
     for(int i = 0; i < n; i++){
         components[i].parent = i;
         components[i].rank = 0;
@@ -28,6 +34,7 @@ void find_MST(Graph g){
     while(num_components > 1 && prev_num_components != num_components){
         prev_num_components = num_components;
         //find minimum weight edge out of each componenet
+        startTimeFind = CycleTimer::currentSeconds();
         for(int i = 0; i < n; i++){
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g, i);
@@ -55,6 +62,10 @@ void find_MST(Graph g){
                 }
             }
         }
+        endTimeFind = CycleTimer::currentSeconds();
+        findTotal += (endTimeFind - startTimeFind);
+
+        startTimeContract = CycleTimer::currentSeconds();
         //contract based on min edges found
         for(int i = 0; i < n; i++){
             int src = min_edges[i].src;
@@ -73,10 +84,13 @@ void find_MST(Graph g){
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
         }
+        endTimeContract = CycleTimer::currentSeconds();
+        contractTotal += (endTimeContract - startTimeContract);
         
     }
 
-
+    printf("find time sequential: %.20f\n", findTotal);
+    printf("contract time sequential: %.20f\n", contractTotal);
     //handles the case of disconnected graphs where there would be fewer than
     //n-1 edges in the mst
 //    for(int i = 0; i < n-num_components; i++){
