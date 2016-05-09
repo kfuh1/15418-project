@@ -32,7 +32,7 @@ int main(int argc, char** argv){
             weight_idx++;
         }  
     }*/
-
+    //test push comment
     double startTimeSeq = CycleTimer::currentSeconds();
     find_MST(graph); 
     double endTimeSeq = CycleTimer::currentSeconds();
