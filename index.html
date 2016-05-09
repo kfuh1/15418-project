@@ -131,7 +131,7 @@
                 </tr>
                 <tr>
                     <td><b>Core(s):</b></td>
-                    <td>12</td>
+                    <td>6</td>
                 </tr>
             </table>
 
@@ -176,7 +176,7 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Results</h4>
-            <p>Given that we are running on machine with 12 cores and 2 execution contexts per core, we know that we have 24 execution contexts. We would thus expect to get performance benefits and a speedup up until 24 threads. After 24 threads though, we would expect either worse speedup or no improvement; we still decided to run it just to see what would happen to performance due to creation and scheduling overhead.</p>
+            <p>Given that we are running on machine with 6 cores and 2 execution contexts per core, we know that we have 12 execution contexts. We would thus expect to get performance benefits and a speedup up until 12 threads. After 12 threads though, we would expect either worse speedup or no improvement; we still decided to run it just to see what would happen to performance due to creation and scheduling overhead.</p>
               
               <p>In order to collect results, we using wall clock timing with the CycleTimer module as in past assignments to determine performance of our algorithm on our large graph. It is important to note that we did not include time taken to create our graphs because this is independent of our algorithm’s implementation.</p>
               
