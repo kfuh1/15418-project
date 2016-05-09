@@ -194,7 +194,7 @@
               <center><i>Figure 3: Sequential and parallel performance of star contraction while finding min edges by edge and doing coin flips sequentially</i></center>
               <p>As seen in Figure 3, after removing the parallel coin flips (i.e. calls to the C++ rand() function) we saw better speedup for this parallel version (although still not as good as the sequential version). As for the issue of the parallel version being slower, we think the discussion under Figure 2 still applies here. Regarding the bit of speedup from changing the coin flips, we did not find very much information about the rand() implementation despite our research. Some people mentioned it was a slow function, but even after we implemented our own pseudorandom number generator using xorshift, the performance did not improve. Based on our own thoughts, we believe the slowdown could be due to the fact that it is a pseudorandom number generator that may have serial dependencies on the previous number generated, and so parallelizing was just adding extra overhead.</p>
               
-              <p><b>Thoughts and exploration of slow down:</b>We think the slowdown in the star contraction implementations is probably due to there being more iterations of the algorithm in this version. This hypothesis is confirmed when we added a counter for the number of iterations the implementations were taking. On the large graph, the sequential version finished in 8 iterations. After running the star contraction version a few times, we found that it took between 26 and 28 iterations on average.</p>
+              <p><b>Thoughts and exploration of slow down:</b> We think the slowdown in the star contraction implementations is probably due to there being more iterations of the algorithm in this version. This hypothesis is confirmed when we added a counter for the number of iterations the implementations were taking. On the large graph, the sequential version finished in 8 iterations. After running the star contraction version a few times, we found that it took between 26 and 28 iterations on average.</p>
 
               <p>Something interesting about all our performance graphs above is that on one thread the parallel version is slower than the sequential version. This was unexpected as one would think that running on one thread should have the same runtime as the sequential version. Even after testing and changing our parallel code so that it was as similar to the sequential code as we could get, the slowdown still exists, and we are unsure what is causing it.</p>
 
@@ -237,7 +237,7 @@
       <div class="section">
         <div class="row">
           <div class="col s12 m12">
-            <h4>List of Work By each Student</h4>
+            <h4>List of Work By Each Student</h4>
             <p>Equal work was performed by both project members.</p>
           </div>
         </div>
