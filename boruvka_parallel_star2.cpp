@@ -52,6 +52,8 @@ void find_MST_parallel_star2(Graph g){
     double findTotal = 0.0;
     double startTimeContract, endTimeContract;
     double contractTotal = 0.0;
+    
+    int iterations = 0;
     //this is a hacky way to accommodate the fact that we look at every edge
     //even though we're contracting
     bool is_first_passes[n];
@@ -155,12 +157,14 @@ void find_MST_parallel_star2(Graph g){
             is_first_passes[i] = true;
             is_contracted[i] = false;
         }*/
+        iterations++;
     }
 /*
     for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
   */  
+    printf("iterations: %d\n", iterations);
     printf("find time parallel edge star: %.20f\n", findTotal);
     printf("contract time parallel edge star: %.20f\n", contractTotal);
     delete[] min_edges;

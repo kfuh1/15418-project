@@ -7,7 +7,7 @@
 #include "union_find.h"
 #include "CycleTimer.h"
 
-#define THREADS 64
+#define THREADS 8
 #define CHUNKSIZE 128
 
 void find_MST_parallel_star(Graph g){

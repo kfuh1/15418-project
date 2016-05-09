@@ -7,7 +7,7 @@
 #include "union_find.h"
 #include "CycleTimer.h"
 
-#define THREADS 48
+#define THREADS 1
 
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
@@ -15,7 +15,8 @@
 void find_MST_parallel_edge(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
-    
+ 
+    int num_components = n;
     omp_lock_t *locks = new omp_lock_t[n];
 
     //store the edge index of the min weight edge incident on node i
@@ -33,6 +34,9 @@ void find_MST_parallel_edge(Graph g){
     double findTotal = 0.0;
     double startTimeContract, endTimeContract;
     double contractTotal = 0.0;
+
+    int prev_num_components = 0;
+    int iterations = 0;
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < n; i++){
         components[i].parent = i;
@@ -43,7 +47,9 @@ void find_MST_parallel_edge(Graph g){
 
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
-    while(can_be_contracted){
+    //while(can_be_contracted){
+    while(num_components > 1 && prev_num_components != num_components){
+        prev_num_components = num_components;
         startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, THREADS)
         for(int i = 0; i < n; i++){
@@ -113,7 +119,7 @@ void find_MST_parallel_edge(Graph g){
             union_seq(components, root1, root2);
             mst_edges[mst_edges_idx] = min_edges[i];
             mst_edges_idx += 1;
-            //num_components--;
+            num_components--;
         }
 
         endTimeContract = CycleTimer::currentSeconds();
@@ -122,12 +128,14 @@ void find_MST_parallel_edge(Graph g){
         for(int i = 0; i < n; i++){
             is_first_passes[i] = true;
         }*/
+        iterations++;
     }
 /*
     for(int i = 0; i < n-1; i++){
         printf("%d,%d\n", mst_edges[i].src, mst_edges[i].dest);
     }
   */  
+    printf("iterations: %d\n", iterations);
     printf("find time parallel edge edge: %.20f\n", findTotal);
     printf("contract time parallel edge edge: %.20f\n", contractTotal);
     delete[] min_edges;

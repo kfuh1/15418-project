@@ -39,30 +39,30 @@ int main(int argc, char** argv){
     
     printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
 
-    /*double startTimePar = CycleTimer::currentSeconds();
+/*    double startTimePar = CycleTimer::currentSeconds();
     find_MST_parallel(graph);
     double endTimePar = CycleTimer::currentSeconds();
     printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
 */
     //remember that the "Edge" in the name refers to finding by edges
-/*
+
     double startTimeParEdge = CycleTimer::currentSeconds();
     find_MST_parallel_edge(graph);
     double endTimeParEdge = CycleTimer::currentSeconds();
     printf("Total time parallel find by edge: %.20f\n", endTimeParEdge - startTimeParEdge);
-*/
-    /*
-    double startTimeStar = CycleTimer::currentSeconds();
+
+    
+   /* double startTimeStar = CycleTimer::currentSeconds();
     find_MST_parallel_star(graph);
     double endTimeStar = CycleTimer::currentSeconds();
     printf("Total time parallel star: %.20f\n", endTimeStar - startTimeStar);
     */
-
+/*
     double startTimeStar2 = CycleTimer::currentSeconds();
     find_MST_parallel_star2(graph);
     double endTimeStar2 = CycleTimer::currentSeconds();
     printf("Total time parallel star with edge find: %.20f\n", endTimeStar2 - startTimeStar2);
-
+*/
     /*int V = 12;  
 
     //DEFINE GRAPH

@@ -12,6 +12,7 @@ void find_MST(Graph g){
     struct set *components = new struct set[n];
     int num_components = n;
 
+    int iterations = 0;
     struct Edge* mst_edges = new struct Edge[n-1];
     int mst_edges_idx = 0;
     //this is a hacky way to accommodate the fact that we look at every edge
@@ -86,9 +87,10 @@ void find_MST(Graph g){
         }
         endTimeContract = CycleTimer::currentSeconds();
         contractTotal += (endTimeContract - startTimeContract);
-        
+        iterations++;        
     }
 
+    printf("iterations: %d\n", iterations);
     printf("find time sequential: %.20f\n", findTotal);
     printf("contract time sequential: %.20f\n", contractTotal);
     //handles the case of disconnected graphs where there would be fewer than
