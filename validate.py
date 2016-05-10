@@ -15,6 +15,8 @@ def validateBoruvka(filename):
             continue
         if "time" in line:
             continue
+        if line[0] not in range(10):
+            continue
         elems = line.split(',')
         e = (int(elems[0]), int(elems[1]))
         eRev = (int(elems[1]), int(elems[0]))
