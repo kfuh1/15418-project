@@ -12,7 +12,7 @@
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
 //although the iniitial implementation might be edge contraction)
-void find_MST_parallel_edge(Graph g){
+struct Edge* find_MST_parallel_edge(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
  
@@ -140,4 +140,5 @@ void find_MST_parallel_edge(Graph g){
     printf("contract time parallel edge edge: %.20f\n", contractTotal);
     delete[] min_edges;
     delete[] components;
+    return mst_edges;
 }

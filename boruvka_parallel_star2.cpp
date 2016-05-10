@@ -28,7 +28,7 @@ unsigned int xorshf(){
 //when we say edge right here we mean that we parallelize
 //over edges when finding the mins, (not edge contraction
 //although the iniitial implementation might be edge contraction)
-void find_MST_parallel_star2(Graph g){
+struct Edge* find_MST_parallel_star2(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
     
@@ -44,9 +44,6 @@ void find_MST_parallel_star2(Graph g){
     
     bool *coin_flips = new bool[n];
     bool *is_contracted = new bool[n];
-
-    //std::default_random_engine generator;
-    //std::uniform_int_distribution<int> distribution(0,1);
     
     double startTimeFind, endTimeFind;
     double findTotal = 0.0;
@@ -71,7 +68,6 @@ void find_MST_parallel_star2(Graph g){
         startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for shared(min_edges, locks) schedule(dynamic, CHUNKSIZE)
         for(int i = 0; i < n; i++){
-            //coin_flips[i] = (xorshf() == 1);
             const Vertex* start = edges_begin(g, i);
             const Vertex* end = edges_end(g,i);
             int weight_offset = -1;
@@ -106,7 +102,6 @@ void find_MST_parallel_star2(Graph g){
         //#pragma omp parallel for schedule(static)
         for(int i = 0; i < n; i++){
             coin_flips[i] = ((rand() % 2) == 1);
-            //coin_flips[i] = (xorshf() == 1);
         }
 
         can_be_contracted = false;
@@ -137,26 +132,17 @@ void find_MST_parallel_star2(Graph g){
                     continue;
             }
             if(coin_flips[root1]){
-                //omp_set_lock(&(locks[root2]));
                 union_parallel(components, root2, root1);
                 mst_edges[root2] = min_edges[i];
-                //omp_unset_lock(&(locks[root2]));
             }
             else{
-                //omp_set_lock(&(locks[root1]));
                 union_parallel(components, root1, root2);
                 mst_edges[root1] = min_edges[i];
-                //omp_unset_lock(&(locks[root1]));
             }
         }
 
         endTimeContract = CycleTimer::currentSeconds();
         contractTotal += (endTimeContract - startTimeContract);
-        /*#pragma omp parallel for schedule(static)
-        for(int i = 0; i < n; i++){
-            is_first_passes[i] = true;
-            is_contracted[i] = false;
-        }*/
         iterations++;
     }
 /*
@@ -169,4 +155,5 @@ void find_MST_parallel_star2(Graph g){
     printf("contract time parallel edge star: %.20f\n", contractTotal);
     delete[] min_edges;
     delete[] components;
+    return mst_edges;
 }

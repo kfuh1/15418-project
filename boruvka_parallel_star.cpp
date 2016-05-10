@@ -10,7 +10,7 @@
 #define THREADS 8
 #define CHUNKSIZE 128
 
-void find_MST_parallel_star(Graph g){
+struct Edge* find_MST_parallel_star(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
@@ -144,32 +144,6 @@ void find_MST_parallel_star(Graph g){
         }
         endTimeContract = CycleTimer::currentSeconds();
         contractTotal += (endTimeContract - startTimeContract);
-/*        
-        //update all the components - if we do this do we still need to
-        //find in the first section
-        #pragma omp parallel for schedule(static)
-        for(int i = 0; i < n; i++){
-            find_parallel(components, i);
-        }
-        //this logic is super confusing but i think it's correct
-        //we want the loop to go while there are multiple components
-        //(i.e. not_one_component = true)
-        //here we check if any component is different from the first
-        //if it differs then it fails the component check which means
-        //we need to keep loping because we still have different components
-        bool component_check = true;
-        #pragma omp parallel for schedule(static)
-        for(int i = 1; i < n; i++){
-            if(components[i].parent != components[0].parent)
-                component_check = false;
-        }
-        not_one_component = !component_check; */
-        //TODO oh no, but now we've lost our ability to deal with non-connected things
-        //because we don't have any way of checking prev_num_components to num_componens
-        //maybe we can have a bool such as  did_contract because as long as you have
-        //at least one contraction then you're good (but oh wait also, with star contraction there is non-zero
-        //probability that you won't contract (if everyone flips tails)- how do we handle this, or do we actually
-        //guarantee connected graphs now?)
     }
 
 /*    for(int i = 0; i < n; i++){
@@ -184,4 +158,5 @@ void find_MST_parallel_star(Graph g){
     printf("contract time parallel comp star: %.20f\n", contractTotal);
     delete[] min_edges;
     delete[] components;
+    return mst_edges;
 }

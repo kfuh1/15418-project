@@ -5,7 +5,7 @@
 #include "union_find.h"
 
 #include "CycleTimer.h"
-void find_MST(Graph g){
+struct Edge* find_MST(Graph g){
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
     struct Edge* min_edges = new struct Edge[n];
@@ -102,4 +102,5 @@ void find_MST(Graph g){
     printf("end sequential\n");*/
     delete[] min_edges;
     delete[] components;
+    return mst_edges;
 }

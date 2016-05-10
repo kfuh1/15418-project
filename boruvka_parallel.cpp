@@ -9,7 +9,7 @@
 #include "CycleTimer.h"
 #define THREADS 8
 #define CHUNKSIZE 128
-void find_MST_parallel(Graph g){
+struct Edge* find_MST_parallel(Graph g){
     omp_set_num_threads(THREADS);
     int n = get_num_nodes(g);
     //store the edge index of the min weight edge incident on node i
@@ -17,17 +17,11 @@ void find_MST_parallel(Graph g){
     struct set *components = new struct set[n];
     int num_components = n;
 
-    bool can_be_contracted = true;
-    //int *weights = new int[n];
-    //int *dests = new int[n];
-
+    //bool can_be_contracted = true;
 
     //use this stuff so you can write into the temp_edges array in parallel
     //then sequentially loop through it and insert into the actual mst_edges
     //at least this way you can parallelize the find_parallel part 
-    //struct Edge* temp_edges = new struct Edge[n-1];
-    //Edge dummyEdge;
-    //dummyEdge.src = -1;
 
     struct Edge* mst_edges = new struct Edge[n-1];
     int mst_edges_idx = 0;
@@ -48,8 +42,8 @@ void find_MST_parallel(Graph g){
     double contractTotal = 0.0;
     //continue looping until there's only 1 component
     //in the case of a disconnected graph, until num_components doesn't change
-//    while(num_components > 1 && prev_num_components != num_components){
-    while(can_be_contracted){
+    while(num_components > 1 && prev_num_components != num_components){
+    //while(can_be_contracted){
         prev_num_components = num_components;
         startTimeFind = CycleTimer::currentSeconds();
         #pragma omp parallel for schedule(dynamic, CHUNKSIZE)
@@ -89,7 +83,7 @@ void find_MST_parallel(Graph g){
         findTotal += (endTimeFind - startTimeFind);
 
         startTimeContract = CycleTimer::currentSeconds();
-        can_be_contracted = false;
+        //can_be_contracted = false;
         //contract based on min edges found 
         //uses edge contraction which we couldn't think of a good way
         //to parallelize
@@ -103,11 +97,11 @@ void find_MST_parallel(Graph g){
             if(root1 == root2){
                 continue;
             }
-            can_be_contracted = true;
+            //can_be_contracted = true;
             union_seq(components, root1, root2);
             mst_edges[mst_edges_idx] = min_edges[i];
             mst_edges_idx += 1;
-            //num_components--;
+            num_components--;
         }
 
         endTimeContract = CycleTimer::currentSeconds();
@@ -121,4 +115,5 @@ void find_MST_parallel(Graph g){
     }*/
     delete[] min_edges;
     delete[] components;
+    return mst_edges;
 }

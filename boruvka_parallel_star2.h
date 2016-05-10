@@ -5,6 +5,6 @@
 
 #include "graph.h"
 
-void find_MST_parallel_star2(Graph g);
+struct Edge* find_MST_parallel_star2(Graph g);
 
 #endif

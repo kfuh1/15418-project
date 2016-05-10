@@ -18,81 +18,58 @@ int main(int argc, char** argv){
     //parse args to just get filename
     char* filename = argv[1];
 
-    //Graph graph = load_graph_binary(filename); //using graph binaries assignment 3
-
     Graph graph = create_graph(filename);
-    //printf("%d, %d\n", graph->num_nodes, graph->num_edges);
-    //int weight_idx = 0; 
-    /*for (int i = 0; i < graph->num_nodes; i++) {
-        printf("src: %d\n", i);
-        const Vertex* start = edges_begin(graph, i);
-        const Vertex* end = edges_end(graph, i);
-        for(const Vertex* v = start; v < end; v++){
-            printf("dest: %d, weight: %d\n", *v, graph->weights[weight_idx]);
-            weight_idx++;
-        }  
-    }*/
-    //test push comment
+    int n = graph->num_nodes;
+    struct Edge* mst_seq;
+    struct Edge* mst_par;    
+    //sequential
     double startTimeSeq = CycleTimer::currentSeconds();
-    find_MST(graph); 
+    mst_seq = find_MST(graph); 
     double endTimeSeq = CycleTimer::currentSeconds();
-    
     printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
 
-/*    double startTimePar = CycleTimer::currentSeconds();
-    find_MST_parallel(graph);
+    for(int i = 0; i < n; i++){
+        if(mst_seq[i].src == 0 && mst_seq[i].dest == 0)
+            continue;
+        if(mst_seq[i].src < 0 || mst_seq[i].src > n || mst_seq[i].dest < 0 || mst_seq[i].dest > n)
+            continue;
+        printf("%d, %d\n", mst_seq[i].src, mst_seq[i].dest);
+    }
+
+    //parallel find by component with edge contraction
+    double startTimePar = CycleTimer::currentSeconds();
+    mst_par = find_MST_parallel(graph);
     double endTimePar = CycleTimer::currentSeconds();
     printf("Total time parallel: %.20f\n", endTimePar - startTimePar);
-*/
+
     //remember that the "Edge" in the name refers to finding by edges
 
-    double startTimeParEdge = CycleTimer::currentSeconds();
-    find_MST_parallel_edge(graph);
+    //parallel find by edge with edge contraction
+/*    double startTimeParEdge = CycleTimer::currentSeconds();
+    mst_par = find_MST_parallel_edge(graph);
     double endTimeParEdge = CycleTimer::currentSeconds();
     printf("Total time parallel find by edge: %.20f\n", endTimeParEdge - startTimeParEdge);
-
-    
+*/
+    //parallel find by component with star contraction
    /* double startTimeStar = CycleTimer::currentSeconds();
-    find_MST_parallel_star(graph);
+    mst_par = find_MST_parallel_star(graph);
     double endTimeStar = CycleTimer::currentSeconds();
     printf("Total time parallel star: %.20f\n", endTimeStar - startTimeStar);
     */
+    //parallel find by edge with star contraction
 /*
     double startTimeStar2 = CycleTimer::currentSeconds();
-    find_MST_parallel_star2(graph);
+    mst_par = find_MST_parallel_star2(graph);
     double endTimeStar2 = CycleTimer::currentSeconds();
     printf("Total time parallel star with edge find: %.20f\n", endTimeStar2 - startTimeStar2);
 */
-    /*int V = 12;  
-
-    //DEFINE GRAPH
-    Graph g = createCrazyGraph();
-    int weight_idx = 0;
-    for (int i = 0; i < V; i++) {
-        printf("src: %d\n", i);
-        const Vertex* start = edges_begin(g, i);
-        const Vertex* end = edges_end(g, i);
-        for(const Vertex* v = start; v < end; v++){
-            printf("dest: %d, weight: %d\n", *v, g->weights[weight_idx]);
-            weight_idx++;
-        }  
+    for(int i = 0; i < n; i++){
+        if(mst_par[i].src == 0 && mst_par[i].dest == 0)
+            continue;
+        if(mst_par[i].src < 0 || mst_par[i].src > n || mst_par[i].dest < 0 || mst_par[i].dest > n)
+            continue;
+        printf("%d, %d\n", mst_par[i].src, mst_par[i].dest);
     }
-
-    printf("-------------------------\n");
-
-    double startTimeSeq = CycleTimer::currentSeconds();
-
-    find_MST(g);
-
-    double endTimeSeq = CycleTimer::currentSeconds();
-
-    double startTimePar = CycleTimer::currentSeconds();
-
-    find_MST_parallel(g);
-
-    double endTimePar = CycleTimer::currentSeconds();
-
-    printf("Total time sequential: %.20f\n", endTimeSeq - startTimeSeq);
-    printf("Total time parallel: %.20f\n", endTimePar - startTimePar);*/
+  
     return 0;
 }
