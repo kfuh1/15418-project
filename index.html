@@ -99,7 +99,7 @@
             <p><b>Other challenges:</b></p>
             <ul>
               <li>Creating graphs (explained in the Approach section)</li>
-              <li>Writing a lock-free union data structure, so that we could decrease the granularity of our locking and critical sections</li>
+              <li>Writing a lock-free union find data structure, so that we could decrease the granularity of our locking and critical sections</li>
             </ul>
           </div>
         </div>
@@ -113,7 +113,7 @@
             <h4>Approach</h4>
             <p><b>Technologies:</b></p>
             <ul>
-              <li>We used the GHC machines and C++ for this project. We also used some Python for graph creation and correctness checks. In order parallelize our implementation on the CPU we used OpenMP primitives.</li>
+              <li>We used the GHC machines (specifically using GHC 26 for our performance testing) and C++ for this project. We also used some Python for graph creation and correctness checks. In order parallelize our implementation on the CPU we used OpenMP primitives.</li>
             </ul>
 
             <table style="width:50%">
@@ -136,7 +136,7 @@
             </table>
 
             <p><b>Graph Representation:</b></p>
-            <p><b>Initial idea:</b> We determined that we wanted some kind of adjacency list because an adjacency matrix for high vertex counts would be space inefficient (to add to the space, we also needed weights so we would not be able to just use a boolean matrix). Because we need weights on the edges, we started by creating an Edge struct type that held a source, destination, and weight and then made an adjacency list such that each node had a linked list of all its edges. As we started working with this idea and implemented a sequential version of Bor&#367uvka’s with it, we realized that the linked list would not parallelize well and it would also require a lot of overhead in ensuring correctness if we continued with it for the parallel version.</p>
+            <p><b>Initial idea:</b> We determined that we wanted some kind of adjacency list because an adjacency matrix for high vertex counts would be space inefficient (to add to the space, we also needed weights so we would not be able to just use a boolean matrix). Because we needed weights on the edges, we started by creating an Edge struct type that held a source, destination, and weight and then made an adjacency list such that each node had a linked list of all its edges. As we started working with this idea and implemented a sequential version of Bor&#367vka’s with it, we realized that the linked list would not parallelize well and it would also require a lot of overhead in ensuring correctness if we continued with it for the parallel version.</p>
             <p><b>Final idea:</b> We modeled the undirected graph with an underlying representation of a directed graph (so a directed edge is listed in the graph twice for the two directions). We based our representation off of the representation used in assignment 3. Vertices were numbered from 0 to n-1 where n is the number of vertices. We used three arrays, one for offsets, one for destination vertices, and one for weights. The offsets array allowed us to index into the destinations and weights arrays (offset[i] gave us where vertex i’s out-edges started).</p>
             <p>Note: The final graph representation, although easy to visualize, does not lend itself well to updating the graph itself. In 15-210 when we implemented Bor&#367vka’s algorithm we could easily create a new graph by simply creating new vertex and edge sets every time we contracted the graph. Because of the calculation of offsets which would require sorting (and also require roughly twice the graphs size in space as we essentially make a copy of the graph), we decided we would keep the original graph and always operate on the original graph. We used a union-find data structure to handle the task of finding the component a vertex belonged to. The inability to update the graph as it contracts was a source of challenges as we will mention in the description of our many attempts at optimizations as detailed below.</p>
             <p><b>Graph Creation:</b></p>
@@ -176,11 +176,11 @@
         <div class="row">
           <div class="col s12 m12">
             <h4>Results</h4>
-            <p>Given that we are running on machine with 6 cores and 2 execution contexts per core, we know that we have 12 execution contexts. We would thus expect to get performance benefits and a speedup up until 12 threads. After 12 threads though, we would expect either worse speedup or no improvement; we still decided to run it just to see what would happen to performance due to creation and scheduling overhead.</p>
+            <p>Given that we are running on machine with 6 cores and 2 execution contexts per core, we know that we have 12 execution contexts. We expected to get performance benefits and a speedup up until 12 threads. After 12 threads though, we expected either worse speedup or very little improvement; we still decided to run it just to see what would happen to performance due to creation and scheduling overhead.</p>
               
               <p>In order to collect results, we using wall clock timing with the CycleTimer module as in past assignments to determine performance of our algorithm on our large graph. It is important to note that we did not include time taken to create our graphs because this is independent of our algorithm’s implementation.</p>
               
-              <p><b>Runtimes:</b> We decided to collect results from running our algorithm on the largest graph because this would be where the effect of parallelism is most noticeable. This graph had 1,000,000 nodes and 9,000,000 edges (note that for preliminary testing we ran the algorithm on smaller graphs, but the significant results displayed below are from the large graph). We ran the algorithm on thread counts of 1, 2, 4, 8, 12, 16, 24, 32, and 40. Below we show our results visually. A common trend is that the performance plateaus after a certain thread count. We think that the graph plateaus due to the overhead in thread creation. Having a lot of threads starts off pretty useful, but as you contract there will be fewer components and thus less independent work to do so threads may be sitting idle
+              <p><b>Runtimes:</b> We decided to collect results from running our algorithm on the largest graph because this would be where the effect of parallelism is most noticeable. This graph had 1,000,000 nodes and 9,000,000 edges (note that for preliminary testing we ran the algorithm on smaller graphs, but the significant results displayed below are from the large graph). We ran the algorithm on thread counts of 1, 2, 4, 8, 12, 16, 24, 32, and 40. Below we show our results visually. A common trend is that the performance plateaus after a certain thread count. We think that the graph plateaus due to the overhead in thread creation. Having a lot of threads starts off pretty useful, but as you contract there will be fewer components and thus less meaningful work to do so threads use up processor resources unnecessarily. (Our notion of meaningful goes back to the idea that we are always looping over the original graph, so as more of it is contracted, the algorithm still has to loop through the contracted edges and check that they are indeed in the same component before moving on to another edge.) 
               </p>
               <img src="images/edge-graph.png" alt="Edge Graph" style="width:450px;height:330px;" class="center-block"/>
               <center><i>Figure 1: Sequential and parallel performance of edge contraction while finding min edges by edge</i></center>
