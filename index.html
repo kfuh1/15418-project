@@ -196,7 +196,7 @@
               
               <p><b>Thoughts and exploration of slow down:</b> We think the slowdown in the star contraction implementations is probably due to there being more iterations of the algorithm in this version. This hypothesis is confirmed when we added a counter for the number of iterations the implementations were taking. On the large graph, the sequential version finished in 8 iterations. After running the star contraction version a few times, we found that it took between 26 and 28 iterations on average.</p>
 
-              <p>Something interesting about all our performance graphs above is that on one thread the parallel version is slower than the sequential version. This was unexpected as one would think that running on one thread should have the same runtime as the sequential version. Even after testing and changing our parallel code so that it was as similar to the sequential code as we could get, the slowdown still exists, and we are unsure what is causing it.</p>
+              <p>Something interesting about all our performance graphs above is that on one thread the parallel version is slower than the sequential version. This was unexpected as one would think that running on one thread should have the same runtime as the sequential version. Even after testing and changing our parallel code so that it was as similar to the sequential code as we could get, the slowdown still exists, and we are currently unsure what is causing it (but it is something we will continue to look into).</p>
 
               <p>Please note: we were not able to collect results for the other 2 implementations because the runtime was way too slow to complete for the large graph.</p>
 
