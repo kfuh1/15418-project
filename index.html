@@ -200,17 +200,17 @@
 
               <p>Please note: we were not able to collect results for the other 2 implementations because the runtime was way too slow to complete for the large graph.</p>
 
-              <p><b>Algorithm Breakdown:</b> Below we analyze the breakdown of work performed by our algorithm into three categories: finding edges, contracting edges, and other work (this includes initializing variables and freeing variables):</p>
+              <p><b>Algorithm Breakdown:</b> Below we analyze the breakdown of work performed by our algorithm into three categories: finding edges, contracting edges, and other work (this includes initializing variables and freeing variables).We run the program on 8 threads to generate the data that is plotted below because we saw from the graphs above that the best performance came at 8 threads for all implementations.:</p>
 
               <img src="images/edge-breakdown.png" alt="Edge Breakdown" style="width:450px;height:330px;" class="center-block">
               <p><center><i>Figure 4: A breakdown of the proportion of time spent finding edges, contracting edges, and other work in both the sequential and parallel implementations of find edge by edge with edge contraction</i></center>
 
-              <p>TODO: EXPLAIN FIGURE 4</p>
+              <p>In Figure 4 above, we see that finding the minimum edges step takes the most amount of time from the total time, although that proportion of time decreases in the parallel version. Since edges are being contracted in the same manner (both implementations use edge contraction), this suggests that parallelizing the finding of the minimum weight edge out of each component does in fact help. Unfortunately, there is a limit to how much that parallelization can help as we saw from Figure 1 that the speedup plateaus at about 2x. We attribute this limitation to the locking that needs to be done on the data structure by nature of the “taking a minimum” operation. </p>
               
               <img src="images/star-breakdown.png" alt="Star Breakdown" style="width:450px;height:330px;" class="center-block">
               <p><center><i>Figure 5: A breakdown of the proportion of time spent finding edges, contracting edges, and other work in both the sequential and parallel implementations of find edge by edge with star contraction</i></center>
 
-              <p>TODO: EXPLAIN FIGURE 5</p>
+              <p>As seen in Figure 5, compared to the sequential version, star contraction seems to spend almost triple the proportion of time contracting edges. We can attribute this back to our discussion under Figure 2, where we saw that there were many more iterations of traversing the graph from star contraction. Given that the graphs in Figures 4 and 5 are based on implementations that use the same finding minimum edges technique, we get a sense for how those extra iterations of the algorithm hurt our performance, since in wall-clock time the finding edges should take about the same time, but proportionally, more time has to be devoted to contracting edges.</p>
 
               <p>We notice from both Figures 4 and 5 that the algorithm spends the majority of its time looking for edges to contract. We think that this is probably due to the fact that we have a lot more edges than vertices and for the contraction stage we are only looping through the number of vertices whereas when looking for edges to contract we always have to loop through the number of edges.</p>            
           </div>
